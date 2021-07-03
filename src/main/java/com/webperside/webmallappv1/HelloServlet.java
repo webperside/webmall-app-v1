@@ -1,8 +1,12 @@
 package com.webperside.webmallappv1;
 
 import java.io.*;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.Arrays;
 import javax.servlet.http.*;
 import javax.servlet.annotation.*;
+import javax.xml.bind.DatatypeConverter;
 
 @WebServlet(name = "helloServlet", value = "/hello-servlet")
 public class HelloServlet extends HttpServlet {

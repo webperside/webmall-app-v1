@@ -20,4 +20,13 @@ public enum UserType {
     public String getName() {
         return name;
     }
+
+    public static UserType getByValue(int value){
+        for(UserType type: values()){
+            if(type.getValue() == value){
+                return type;
+            }
+        }
+        return null;
+    }
 }

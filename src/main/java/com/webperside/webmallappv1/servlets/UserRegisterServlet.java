@@ -3,6 +3,8 @@ package com.webperside.webmallappv1.servlets;
 import com.webperside.webmallappv1.dto.UserRegisterDto;
 import com.webperside.webmallappv1.enums.Gender;
 import com.webperside.webmallappv1.enums.UserType;
+import com.webperside.webmallappv1.context.ContextLogic;
+import com.webperside.webmallappv1.service.UserService;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -30,7 +32,9 @@ public class UserRegisterServlet extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         UserRegisterDto userRegisterDto = prepareData(req);
 
-        System.out.println(userRegisterDto);
+        UserService userService = ContextLogic.userServiceInstance();
+
+        userService.register(userRegisterDto);
 
         req.getRequestDispatcher("index.jsp").forward(req, resp);
     }
