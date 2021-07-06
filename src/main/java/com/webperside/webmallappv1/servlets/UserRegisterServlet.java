@@ -18,6 +18,8 @@ import java.util.List;
 @WebServlet(name="userRegisterServlet",value = "/user-register")
 public class UserRegisterServlet extends HttpServlet {
 
+    private final UserService userService = ContextLogic.userServiceInstance();
+
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         List<Gender> genders = Arrays.asList(Gender.values());
@@ -25,14 +27,12 @@ public class UserRegisterServlet extends HttpServlet {
 
         req.setAttribute("genders",genders);
         req.setAttribute("userTypes",userTypes);
-        req.getRequestDispatcher("user-register.jsp").forward(req, resp);
+        req.getRequestDispatcher("/user/user-register.jsp").forward(req, resp);
     }
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         UserRegisterDto userRegisterDto = prepareData(req);
-
-        UserService userService = ContextLogic.userServiceInstance();
 
         userService.register(userRegisterDto);
 

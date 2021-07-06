@@ -8,5 +8,7 @@ public interface UserDao {
 
     int save(User user);
 
+    User findById(Integer id);
+
 
 }

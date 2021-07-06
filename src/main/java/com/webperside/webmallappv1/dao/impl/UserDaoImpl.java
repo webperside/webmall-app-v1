@@ -3,11 +3,34 @@ package com.webperside.webmallappv1.dao.impl;
 import com.webperside.webmallappv1.dao.Connector;
 import com.webperside.webmallappv1.dao.UserDao;
 import com.webperside.webmallappv1.enums.DataStatus;
+import com.webperside.webmallappv1.enums.UserStatus;
+import com.webperside.webmallappv1.enums.UserType;
 import com.webperside.webmallappv1.model.User;
 
 import java.sql.*;
 
 public class UserDaoImpl extends Connector implements UserDao {
+
+    private User getUser(ResultSet rs) throws SQLException {
+        User user = new User();
+        user.setUserId(rs.getInt(1));
+        user.setUsername(rs.getString(2));
+        user.setPassword(rs.getString(3));
+        user.setUserType(UserType.getByValue(rs.getInt(4)));
+        user.setUserStatus(UserStatus.getByValue(rs.getInt(5)));
+        user.setCreatedBy(new User(rs.getInt(6)));
+        user.setCreatedAt(rs.getDate(7).toInstant());
+        user.setModifiedBy(new User(rs.getInt(8)));
+
+        Date modifiedAt = rs.getDate(9);
+
+        user.setModifiedAt(modifiedAt != null ? modifiedAt.toInstant() : null);
+        user.setDataStatus(DataStatus.ACTIVE);
+
+        return user;
+    }
+
+
     @Override
     public boolean checkUserExistsByUsername(String username) {
 
@@ -66,5 +89,30 @@ public class UserDaoImpl extends Connector implements UserDao {
         }
 
         return 0;
+    }
+
+    @Override
+    public User findById(Integer id) {
+        try(Connection c = connect()){
+
+            String sql = "select * from user where user_id = ? and data_status = 1";
+
+            PreparedStatement stmt = c.prepareStatement(sql);
+
+            stmt.setInt(1, id);
+
+            stmt.execute();
+            ResultSet rs = stmt.getResultSet();
+
+            if(rs.next()){
+                return getUser(rs);
+            }
+
+            return null;
+        } catch (SQLException | ClassNotFoundException ex) {
+            ex.printStackTrace();
+        }
+
+        return null;
     }
 }

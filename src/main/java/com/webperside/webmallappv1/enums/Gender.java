@@ -20,4 +20,13 @@ public enum Gender {
     public String getName() {
         return name;
     }
+
+    public static Gender getByValue(int value){
+        for(Gender gender : values()){
+            if(value == gender.getValue()){
+                return gender;
+            }
+        }
+        return null;
+    }
 }

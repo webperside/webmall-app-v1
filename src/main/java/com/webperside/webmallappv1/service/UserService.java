@@ -6,4 +6,5 @@ public interface UserService {
 
     Integer register(UserRegisterDto userRegisterDto);
 
+    Integer confirmUser(String code);
 }

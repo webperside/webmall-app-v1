@@ -15,4 +15,13 @@ public enum UserStatus {
     public byte getValue() {
         return value;
     }
+
+    public static UserStatus getByValue(int value){
+        for(UserStatus status: values()){
+            if(status.getValue() == value){
+                return status;
+            }
+        }
+        return null;
+    }
 }

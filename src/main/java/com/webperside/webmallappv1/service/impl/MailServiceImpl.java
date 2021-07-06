@@ -13,24 +13,40 @@ public class MailServiceImpl implements MailService {
 
     @Override
     public void send(MailDto mailDto) {
+        Thread th = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                sendUtil(mailDto);
+            }
+        });
+
+        th.start();
+    }
+
+    private void sendUtil(MailDto mailDto){
+        final String from = "webperside.org@gmail.com";
+        final String pass = "#1nc0rr3ct";
+
         Properties props = new Properties();
 
         props.put("mail.smtp.host", "smtp.gmail.com");
-        props.put("mail.smtp.port", "465");
+        props.put("mail.smtp.port", "587");
         props.put("mail.smtp.auth", "true");
         props.put("mail.smtp.starttls.enable", "true");
-        props.put("mail.smtp.ssl.trust", "smtp.gmail.com");
+        props.put("mail.smtp.ssl.protocols", "TLSv1.2");
+//        props.put("mail.smtp.ssl.trust", "smtp.gmail.com");
+//        props.put("mail.smtp.ssl.enable","true");
 
         Session session = Session.getInstance(props,new Authenticator() {
             protected PasswordAuthentication getPasswordAuthentication() {
-                return new PasswordAuthentication("webperside.org@gmail.com","#1nc0rr3ct");
+                return new PasswordAuthentication(from, pass);
             }
         });
 
         try {
 
             MimeMessage message = new MimeMessage(session);
-            message.setFrom(new InternetAddress("webperside.org@gmail.com"));
+            message.setFrom(new InternetAddress(from));
             message.addRecipient(Message.RecipientType.TO,new InternetAddress(mailDto.getTo()));
             message.setSubject(mailDto.getSubject());
             message.setText(mailDto.getBody());
