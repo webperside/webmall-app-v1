@@ -21,13 +21,15 @@ public class UserSecurityDaoImpl extends Connector implements UserSecurityDao {
         us.setEmailConfirmationCode(rs.getString("email_confirmation_code"));
         us.setPasswordResetToken(rs.getString("password_reset_token"));
 
-        Date passwordResetTokenExpireDate = rs.getDate("password_reset_token_expire_date");
-        LocalDateTime ldt = passwordResetTokenExpireDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
+        Timestamp passwordResetTokenExpireDate = rs.getTimestamp("password_reset_token_expire_date");
+        LocalDateTime ldt = passwordResetTokenExpireDate == null ?
+                null :
+                passwordResetTokenExpireDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
 
         us.setPasswordResetTokenExpireDate(ldt);
-        us.setCreatedAt(rs.getDate("created_at").toInstant());
+        us.setCreatedAt(rs.getTimestamp("created_at").toInstant());
 
-        Date modifiedAt = rs.getDate("modified_at");
+        Timestamp modifiedAt = rs.getTimestamp("modified_at");
 
         us.setModifiedAt(modifiedAt != null ? modifiedAt.toInstant() : null);
         us.setDataStatus(DataStatus.ACTIVE);
@@ -52,8 +54,7 @@ public class UserSecurityDaoImpl extends Connector implements UserSecurityDao {
 
             stmt.executeUpdate();
             ResultSet rs = stmt.getGeneratedKeys();
-            if(rs.next())
-            {
+            if(rs.next()) {
                 return rs.getInt(1);
             }
 
@@ -88,5 +89,36 @@ public class UserSecurityDaoImpl extends Connector implements UserSecurityDao {
         }
 
         return null;
+    }
+
+    @Override
+    public int update(UserSecurity userSecurity) {
+        try(Connection c = connect()){
+
+            String sql = "update user_security set email_confirmation = ? , password_reset_token = ? , password_reset_token_expire_date = ? , modified_at = ? " +
+                    "where user_security_id = ?";
+
+            PreparedStatement stmt = c.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+
+            stmt.setInt(1, userSecurity.getEmailConfirmation().getValue());
+            stmt.setString(2, userSecurity.getPasswordResetToken());
+
+            LocalDateTime passwordResetTokenExpireDate = userSecurity.getPasswordResetTokenExpireDate();
+
+            stmt.setTimestamp(3, passwordResetTokenExpireDate != null ? Timestamp.valueOf(passwordResetTokenExpireDate) : null);
+            stmt.setTimestamp(4, Timestamp.from(userSecurity.getModifiedAt()));
+            stmt.setInt(5, userSecurity.getUserSecurityId());
+
+            stmt.executeUpdate();
+            ResultSet rs = stmt.getGeneratedKeys();
+            if(rs.next()) {
+                return rs.getInt(1);
+            }
+
+            return -1;
+        } catch (SQLException | ClassNotFoundException ex) {
+            ex.printStackTrace();
+        }
+        return 0;
     }
 }

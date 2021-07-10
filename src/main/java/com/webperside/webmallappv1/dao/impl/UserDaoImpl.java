@@ -19,10 +19,10 @@ public class UserDaoImpl extends Connector implements UserDao {
         user.setUserType(UserType.getByValue(rs.getInt(4)));
         user.setUserStatus(UserStatus.getByValue(rs.getInt(5)));
         user.setCreatedBy(new User(rs.getInt(6)));
-        user.setCreatedAt(rs.getDate(7).toInstant());
+        user.setCreatedAt(rs.getTimestamp(7).toInstant());
         user.setModifiedBy(new User(rs.getInt(8)));
 
-        Date modifiedAt = rs.getDate(9);
+        Timestamp modifiedAt = rs.getTimestamp(9);
 
         user.setModifiedAt(modifiedAt != null ? modifiedAt.toInstant() : null);
         user.setDataStatus(DataStatus.ACTIVE);
@@ -114,5 +114,68 @@ public class UserDaoImpl extends Connector implements UserDao {
         }
 
         return null;
+    }
+
+    @Override
+    public User findByUsernameAndPassword(String username, String password) {
+        try(Connection c = connect()){
+
+            String sql = "select * from user where username = ? and password = ? and data_status = 1";
+
+            PreparedStatement stmt = c.prepareStatement(sql);
+
+            stmt.setString(1, username);
+            stmt.setString(2,password);
+
+            stmt.execute();
+            ResultSet rs = stmt.getResultSet();
+
+            if(rs.next()){
+                return getUser(rs);
+            }
+
+            return null;
+        } catch (SQLException | ClassNotFoundException ex) {
+            ex.printStackTrace();
+        }
+
+        return null;
+    }
+
+    @Override
+    public int update(User user) {
+        try(Connection c = connect()){
+
+            String sql = "update user set password = ? , user_status = ? , modified_by = ? , modified_at = ? where user_id = ?";
+
+            PreparedStatement stmt = c.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+
+            stmt.setString(1, user.getPassword());
+            stmt.setInt(2, user.getUserStatus().getValue());
+
+            User modifiedBy = user.getModifiedBy();
+
+            if(modifiedBy != null){
+                stmt.setInt(3, modifiedBy.getUserId());
+            } else {
+                stmt.setNull(3, Types.INTEGER);
+            }
+
+            stmt.setTimestamp(4, Timestamp.from(user.getModifiedAt()));
+            stmt.setInt(5, user.getUserId());
+
+            stmt.executeUpdate();
+            ResultSet rs = stmt.getGeneratedKeys();
+            if(rs.next())
+            {
+                return rs.getInt(1);
+            }
+
+            return -1;
+        } catch (SQLException | ClassNotFoundException ex) {
+            ex.printStackTrace();
+        }
+
+        return 0;
     }
 }

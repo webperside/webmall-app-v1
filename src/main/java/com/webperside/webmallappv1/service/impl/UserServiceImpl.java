@@ -41,6 +41,8 @@ public class UserServiceImpl implements UserService {
 
         String emailConfirmationCode = saveUserSecurity(user);
 
+        //todo userRole
+
         sendRegistrationEmail(user.getUsername(), emailConfirmationCode);
 
         return user.getUserId();
@@ -53,14 +55,16 @@ public class UserServiceImpl implements UserService {
         if(us == null) return -1;
 
         us.setEmailConfirmation(EmailConfirmation.CONFIRMED);
+        us.setModifiedAt(Instant.now());
+        userSecurityDao.update(us);
 
-//        userSecurityDao.save(us);
-        //todo
-        // userSecurityDao.update();
-        // userDao.findById();
-        // userDao.update();
+        User user = userDao.findById(us.getUser().getUserId());
+        user.setUserStatus(UserStatus.APPROVED);
+        user.setModifiedAt(Instant.now());
 
-        return 1;
+        userDao.update(user);
+
+        return user.getUserId();
     }
 
     private String saveUserSecurity(User user) {

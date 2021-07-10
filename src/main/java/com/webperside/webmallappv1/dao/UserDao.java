@@ -10,5 +10,9 @@ public interface UserDao {
 
     User findById(Integer id);
 
+    User findByUsernameAndPassword(String username, String password);
+
+    int update(User user);
+
 
 }

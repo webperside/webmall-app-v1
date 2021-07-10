@@ -1,8 +1,10 @@
 package com.webperside.webmallappv1.context;
 
 import com.webperside.webmallappv1.service.MailService;
+import com.webperside.webmallappv1.service.SecurityService;
 import com.webperside.webmallappv1.service.UserService;
 import com.webperside.webmallappv1.service.impl.MailServiceImpl;
+import com.webperside.webmallappv1.service.impl.SecurityServiceImpl;
 import com.webperside.webmallappv1.service.impl.UserServiceImpl;
 
 public class ContextLogic {
@@ -12,5 +14,9 @@ public class ContextLogic {
     }
 
     public static MailService mailServiceInstance() { return new MailServiceImpl();}
+
+    public static SecurityService securityServiceInstance() {
+        return new SecurityServiceImpl();
+    }
 
 }

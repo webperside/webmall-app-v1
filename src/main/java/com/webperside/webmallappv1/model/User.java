@@ -9,9 +9,9 @@ import java.time.Instant;
 public class User {
 
     private Integer userId;
-    private String username;
+    private String username; // todo
     private String password;
-    private UserType userType;
+    private UserType userType; // todo
     private UserStatus userStatus;
     private User createdBy;
     private Instant createdAt;
