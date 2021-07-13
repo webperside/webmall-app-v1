@@ -28,7 +28,6 @@ public class SecurityServiceImpl implements SecurityService {
             e.printStackTrace();
         }
 
-
         return 1;
     }
 }

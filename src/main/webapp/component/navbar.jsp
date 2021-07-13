@@ -1,3 +1,4 @@
+<%@ page import="com.webperside.webmallappv1.model.User" %>
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
     <div class="container-fluid">
         <a class="navbar-brand" href="#">Navbar</a>
@@ -27,10 +28,25 @@
                     <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
                 </li>
             </ul>
-            <form class="d-flex">
-                <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-                <button class="btn btn-outline-success" type="submit">Search</button>
-            </form>
+<%--            <form class="d-flex">--%>
+<%--                <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">--%>
+<%--                <button class="btn btn-outline-success" type="submit">Search</button>--%>
+<%--            </form>--%>
+            <%
+                Object obj =request.getSession().getAttribute("loggedUser");
+                if(obj != null){
+                    User user = (User) obj;
+            %>
+            <p>(<%=user.getUsername()%>)</p>
+            <a class="btn btn-outline-success" href="/logout" role="button">Logout</a>
+            <%
+                } else {
+            %>
+            <a class="btn btn-outline-success" href="/login" role="button">Login</a>
+            <a class="btn btn-outline-success" href="/user-register" role="button">Register</a>
+            <%
+                }
+            %>
         </div>
     </div>
 </nav>

@@ -31,8 +31,16 @@ public class LoginServlet extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String username = req.getParameter("username");
         String password = req.getParameter("password");
-        securityService.login(req, username, password);
 
-        resp.sendRedirect("index.jsp");
+        int responseCode = securityService.login(req, username, password);
+
+        String url;
+        if(responseCode == -1){
+            url = String.format("/login?msg=%s&code=%s","Username or password incorrect",responseCode);
+        } else {
+            url = "/index";
+        }
+
+        resp.sendRedirect(url);
     }
 }
