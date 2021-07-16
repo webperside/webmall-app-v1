@@ -30,4 +30,9 @@ public class SecurityServiceImpl implements SecurityService {
 
         return 1;
     }
+
+    @Override
+    public void logout(HttpServletRequest req) {
+        req.getSession().setAttribute("loggedUser", null);
+    }
 }
