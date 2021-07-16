@@ -34,9 +34,24 @@ public class UserRegisterServlet extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         UserRegisterDto userRegisterDto = prepareData(req);
 
-        userService.register(userRegisterDto);
+        int responseCode = userService.register(userRegisterDto);
 
-        req.getRequestDispatcher("index.jsp").forward(req, resp);
+        sendRedirectByResponseCode(responseCode, resp);
+
+//        resp.sendRedirect("/login");
+    }
+
+    private void sendRedirectByResponseCode(int responseCode, HttpServletResponse resp) throws IOException {
+        String url;
+        if(responseCode == -1){
+            url = ""; // todo task4
+        } else if(responseCode == 0) {
+            url = "/login";
+        } else {
+            url = "/company-register?userId="+responseCode;
+        }
+
+        resp.sendRedirect(url);
     }
 
     private UserRegisterDto prepareData(HttpServletRequest req){

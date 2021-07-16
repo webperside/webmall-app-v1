@@ -2,12 +2,11 @@ package com.webperside.webmallappv1.service.impl;
 
 import com.webperside.webmallappv1.context.ContextDao;
 import com.webperside.webmallappv1.context.ContextLogic;
-import com.webperside.webmallappv1.dao.UserDao;
-import com.webperside.webmallappv1.dao.UserProfileDao;
-import com.webperside.webmallappv1.dao.UserSecurityDao;
+import com.webperside.webmallappv1.dao.*;
 import com.webperside.webmallappv1.dto.MailDto;
 import com.webperside.webmallappv1.dto.UserRegisterDto;
 import com.webperside.webmallappv1.enums.*;
+import com.webperside.webmallappv1.model.Role;
 import com.webperside.webmallappv1.model.User;
 import com.webperside.webmallappv1.model.UserProfile;
 import com.webperside.webmallappv1.model.UserSecurity;
@@ -17,13 +16,15 @@ import com.webperside.webmallappv1.util.DigestUtil;
 
 import java.security.NoSuchAlgorithmException;
 import java.time.Instant;
-import java.util.UUID;
+import java.util.*;
 
 public class UserServiceImpl implements UserService {
 
     private final UserDao userDao = ContextDao.userDaoInstance();
     private final UserProfileDao userProfileDao = ContextDao.userProfileDaoInstance();
     private final UserSecurityDao userSecurityDao = ContextDao.userSecurityDaoInstance();
+    private final RoleDao roleDao = ContextDao.roleDaoInstance();
+    private final UserRoleDao userRoleDao = ContextDao.userRoleDaoInstance();
     private final MailService mailService = ContextLogic.mailServiceInstance();
 
     @Override
@@ -41,11 +42,14 @@ public class UserServiceImpl implements UserService {
 
         String emailConfirmationCode = saveUserSecurity(user);
 
-        //todo userRole
+        saveUserRoles(user);
 
-        sendRegistrationEmail(user.getUsername(), emailConfirmationCode);
+        if(user.getUserType().equals(UserType.USER)){
+            sendRegistrationEmail(user.getUsername(), emailConfirmationCode);
+            return 0;
+        }
 
-        return user.getUserId();
+        return user.getUserId(); // if userType is Company
     }
 
     @Override
@@ -130,7 +134,19 @@ public class UserServiceImpl implements UserService {
         return us;
     }
 
-    // localhost:8080/confirm-registration?code=81276345234
+    private void saveUserRoles(User user){
+        Role role = roleDao.findByName("CUSTOMER");
+
+        List<Integer> rolesIds = new ArrayList<>(Collections.singletonList(role.getRoleId()));
+
+        if(user.getUserType().equals(UserType.COMPANY)){
+            role = roleDao.findByName("COMPANY_ADMIN");
+
+            rolesIds.add(role.getRoleId());
+        }
+
+        userRoleDao.save(user.getUserId(), rolesIds);
+    }
 
     private void sendRegistrationEmail(String to, String code){
         String url = "http://localhost:8080/confirm-registration?code="+code;

@@ -1,13 +1,7 @@
 package com.webperside.webmallappv1.context;
 
-import com.webperside.webmallappv1.dao.UserDao;
-import com.webperside.webmallappv1.dao.UserProfileDao;
-import com.webperside.webmallappv1.dao.UserSecurityDao;
-import com.webperside.webmallappv1.dao.impl.UserDaoImpl;
-import com.webperside.webmallappv1.dao.impl.UserProfileDaoImpl;
-import com.webperside.webmallappv1.dao.impl.UserSecurityDaoImpl;
-import com.webperside.webmallappv1.model.UserProfile;
-import com.webperside.webmallappv1.model.UserSecurity;
+import com.webperside.webmallappv1.dao.*;
+import com.webperside.webmallappv1.dao.impl.*;
 
 public class ContextDao {
 
@@ -21,5 +15,10 @@ public class ContextDao {
 
     public static UserSecurityDao userSecurityDaoInstance(){
         return new UserSecurityDaoImpl();
+    }
+
+    public static RoleDao roleDaoInstance(){return new RoleDaoImpl();}
+
+    public static UserRoleDao userRoleDaoInstance(){return new UserRoleDaoImpl();
     }
 }
