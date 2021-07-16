@@ -6,4 +6,6 @@ public interface SecurityService {
 
     int login(HttpServletRequest req, String username, String password);
 
+    void logout(HttpServletRequest req);
+
 }
