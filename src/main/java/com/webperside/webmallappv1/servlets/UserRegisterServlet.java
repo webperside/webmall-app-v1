@@ -64,6 +64,4 @@ public class UserRegisterServlet extends HttpServlet {
 
         return new UserRegisterDto(name, surname, username, password, gender, userType);
     }
-
-
 }

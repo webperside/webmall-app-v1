@@ -92,6 +92,24 @@ public class UserSecurityDaoImpl extends Connector implements UserSecurityDao {
     }
 
     @Override
+    public UserSecurity findByUserId(Integer userId) {
+        try(Connection c = connect()){
+            String sql = "select * from user_security where fk_user_id = ? and data_status = 1";
+            PreparedStatement stmt = c.prepareStatement(sql);
+            stmt.setInt(1, userId);
+            stmt.execute();
+            ResultSet rs = stmt.getResultSet();
+            if(rs.next()){
+                return getUserSecurity(rs);
+            }
+            return null;
+        } catch (SQLException | ClassNotFoundException ex) {
+            ex.printStackTrace();
+        }
+        return null;
+    }
+
+    @Override
     public int update(UserSecurity userSecurity) {
         try(Connection c = connect()){
 

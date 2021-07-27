@@ -8,5 +8,7 @@ public interface UserSecurityDao {
 
     UserSecurity findByEmailConfirmationCode(String code);
 
+    UserSecurity findByUserId(Integer userId);
+
     int update(UserSecurity userSecurity);
 }
