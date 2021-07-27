@@ -22,8 +22,15 @@ public class SecurityServiceImpl implements SecurityService {
             User user = userDao.findByUsernameAndPassword(username, password);
 
             if(user == null) return -1;
-
-            req.getSession().setAttribute("loggedUser",user);
+            else {
+                if (user.getUserStatus().getValue() == 0) return 0;
+                else if (user.getUserStatus().getValue() == 2) return 2;
+                else if (user.getUserStatus().getValue() == 3) return 3;
+                else {
+                    req.getSession().setAttribute("loggedUser", user);
+                    return 1;
+                }
+            }
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
         }

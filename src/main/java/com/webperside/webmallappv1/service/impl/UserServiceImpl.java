@@ -156,7 +156,6 @@ public class UserServiceImpl implements UserService {
         mail.setSubject("Confirm Registration");
 //        mail.setBody("Use this link to confirm your profile : [LINK]".replaceAll("[LINK]",url));
         mail.setBody("Use this link to confirm your profile : " + url);
-
         mailService.send(mail);
     }
 }

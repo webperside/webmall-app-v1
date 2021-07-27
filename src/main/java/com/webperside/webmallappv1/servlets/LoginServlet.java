@@ -31,16 +31,19 @@ public class LoginServlet extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String username = req.getParameter("username");
         String password = req.getParameter("password");
-
         int responseCode = securityService.login(req, username, password);
-
         String url;
-        if(responseCode == -1){
-            url = String.format("/login?msg=%s&code=%s","Username or password incorrect",responseCode);
+        if (responseCode == -1) {
+            url = String.format("/login?msg=%s&code=%s", "Username or passwor incorrect", responseCode);
+        } else if (responseCode == 0) {
+            url = String.format("/login?msg=%s&code=%s", "Your account is deactive", responseCode);
+        } else if (responseCode == 2) {
+            url = String.format("/login?msg=%s&code=%s", "Please click the link on your email to activate your account.", responseCode);
+        } else if (responseCode == 3) {
+            url = String.format("/login?msg=%s&code=%s", "Your account is blocked", responseCode);
         } else {
             url = "/index";
         }
-
         resp.sendRedirect(url);
     }
 }

@@ -1,6 +1,10 @@
 package com.webperside.webmallappv1.servlets;
 
 
+import com.webperside.webmallappv1.context.ContextLogic;
+import com.webperside.webmallappv1.dto.CompanyRegisterDto;
+import com.webperside.webmallappv1.service.CompanyService;
+
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -10,6 +14,8 @@ import java.io.IOException;
 
 @WebServlet(name="companyRegisterServlet", value = "/company-register")
 public class CompanyRegisterServlet extends HttpServlet {
+
+    private final CompanyService companyService = ContextLogic.companyServiceInstance();
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -21,22 +27,16 @@ public class CompanyRegisterServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        String name = req.getParameter("name");
-        String desc = req.getParameter("desc");
-        String userId = req.getParameter("userId");
-
-        System.out.println(name);
-        System.out.println(desc);
-        System.out.println(userId);
-
-        //STEP1.    COMPANY MODEL
-        //STEP2.    DAO -> SAVE(MODEL)
-        //STEP3.    DTO -> PREPARE DATA
-        //STEP4.    SERVICE -> SAVE(DTO)
-        //STEP4.1   DAO.SAVE()
-        //STEP4.2   SEND MAIL
-        //STEP5.    CALL SERVICE METHOD
+        CompanyRegisterDto companyRegisterDto = prepareData(req);
+        int responseCode = companyService.register(companyRegisterDto);
 
         resp.sendRedirect("/login");
+    }
+
+    private CompanyRegisterDto prepareData(HttpServletRequest req) {
+        Integer userId = Integer.parseInt(req.getParameter("userId"));
+        String name = req.getParameter("name");
+        String description = req.getParameter("desc");
+        return new CompanyRegisterDto(userId, name, description);
     }
 }
