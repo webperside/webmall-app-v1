@@ -37,8 +37,18 @@
                 if(obj != null){
                     User user = (User) obj;
             %>
-            <p>(<%=user.getUsername()%>)</p>
-            <a class="btn btn-outline-success" href="/logout" role="button">Logout</a>
+            <div class="btn-group">
+                <button type="button" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                    (<%=user.getUsername()%>)
+                </button>
+                <ul class="dropdown-menu dropdown-menu-start">
+                    <li><button class="dropdown-item" type="button">Action</button></li>
+                    <li><button class="dropdown-item" type="button">Another action</button></li>
+                    <li>
+                        <a class="dropdown-item btn btn-outline-success" href="/logout" role="button">Logout</a>
+                    </li>
+                </ul>
+            </div>
             <%
                 } else {
             %>

@@ -1,22 +1,24 @@
 package com.webperside.webmallappv1.service.impl;
 
 import com.webperside.webmallappv1.context.ContextDao;
-import com.webperside.webmallappv1.context.ContextLogic;
 import com.webperside.webmallappv1.dao.*;
-import com.webperside.webmallappv1.dto.MailDto;
 import com.webperside.webmallappv1.dto.UserRegisterDto;
 import com.webperside.webmallappv1.enums.*;
 import com.webperside.webmallappv1.model.Role;
 import com.webperside.webmallappv1.model.User;
 import com.webperside.webmallappv1.model.UserProfile;
 import com.webperside.webmallappv1.model.UserSecurity;
-import com.webperside.webmallappv1.service.MailService;
 import com.webperside.webmallappv1.service.UserService;
 import com.webperside.webmallappv1.util.DigestUtil;
 
 import java.security.NoSuchAlgorithmException;
 import java.time.Instant;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.UUID;
+
+import static com.webperside.webmallappv1.util.MailUtil.sendRegistrationEmail;
 
 public class UserServiceImpl implements UserService {
 
@@ -25,7 +27,6 @@ public class UserServiceImpl implements UserService {
     private final UserSecurityDao userSecurityDao = ContextDao.userSecurityDaoInstance();
     private final RoleDao roleDao = ContextDao.roleDaoInstance();
     private final UserRoleDao userRoleDao = ContextDao.userRoleDaoInstance();
-    private final MailService mailService = ContextLogic.mailServiceInstance();
 
     @Override
     public Integer register(UserRegisterDto userRegisterDto) {
@@ -146,16 +147,5 @@ public class UserServiceImpl implements UserService {
         }
 
         userRoleDao.save(user.getUserId(), rolesIds);
-    }
-
-    private void sendRegistrationEmail(String to, String code){
-        String url = "http://localhost:8080/confirm-registration?code="+code;
-
-        MailDto mail = new MailDto();
-        mail.setTo(to);
-        mail.setSubject("Confirm Registration");
-//        mail.setBody("Use this link to confirm your profile : [LINK]".replaceAll("[LINK]",url));
-        mail.setBody("Use this link to confirm your profile : " + url);
-        mailService.send(mail);
     }
 }

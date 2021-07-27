@@ -21,6 +21,12 @@ public class MailServiceImpl implements MailService {
         });
 
         th.start();
+
+        // ExecutorService executorService = Executors.cachedThreadPool();
+
+        // executorService.execute vs executorService.submit
+
+        // executorService.shutdown
     }
 
     private void sendUtil(MailDto mailDto){

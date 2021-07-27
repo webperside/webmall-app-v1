@@ -27,6 +27,15 @@ public class SecurityServiceImpl implements SecurityService {
                 else if (user.getUserStatus().getValue() == 2) return 2;
                 else if (user.getUserStatus().getValue() == 3) return 3;
                 else {
+                    //TODO
+                    // SessionUserDetails(id, fullName, username, list<String> roles)
+                    // STEP 1.0 findUserProfileByUserId(user.getId());
+                    // SessionUserDetails.setFullName(userProfile.getName() + " " + userProfile.getSurname())
+                    // STEP 2.0
+                    // SessionUserDetails.setUsername(user.getUsername());
+                    // STEP 3.0
+                    // STEP 4.0 ROLE
+                    System.out.println("SESSION USER DETAILS " + " ");
                     req.getSession().setAttribute("loggedUser", user);
                     return 1;
                 }

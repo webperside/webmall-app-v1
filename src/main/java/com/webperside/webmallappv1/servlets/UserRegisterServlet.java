@@ -44,7 +44,7 @@ public class UserRegisterServlet extends HttpServlet {
     private void sendRedirectByResponseCode(int responseCode, HttpServletResponse resp) throws IOException {
         String url;
         if(responseCode == -1){
-            url = ""; // todo task4
+            url = ""; // todo task4 redirectTo /user-register?msg=
         } else if(responseCode == 0) {
             url = "/login";
         } else {
