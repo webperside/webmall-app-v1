@@ -22,11 +22,13 @@ public class UserRegisterServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        String msg = req.getParameter("msg");
         List<Gender> genders = Arrays.asList(Gender.values());
         List<UserType> userTypes = Arrays.asList(UserType.values());
 
         req.setAttribute("genders",genders);
         req.setAttribute("userTypes",userTypes);
+        req.setAttribute("msg", msg);
         req.getRequestDispatcher("/user/user-register.jsp").forward(req, resp);
     }
 
@@ -44,7 +46,7 @@ public class UserRegisterServlet extends HttpServlet {
     private void sendRedirectByResponseCode(int responseCode, HttpServletResponse resp) throws IOException {
         String url;
         if(responseCode == -1){
-            url = ""; // todo task4 redirectTo /user-register?msg=
+            url = "/user-register?msg=Username is already exist. Please change username.";
         } else if(responseCode == 0) {
             url = "/login";
         } else {
