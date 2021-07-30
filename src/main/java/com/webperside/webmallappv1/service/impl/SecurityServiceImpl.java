@@ -2,7 +2,12 @@ package com.webperside.webmallappv1.service.impl;
 
 import com.webperside.webmallappv1.context.ContextDao;
 import com.webperside.webmallappv1.dao.UserDao;
+import com.webperside.webmallappv1.dao.UserProfileDao;
+import com.webperside.webmallappv1.dao.UserSecurityDao;
+import com.webperside.webmallappv1.dto.SessionUserDetails;
 import com.webperside.webmallappv1.model.User;
+import com.webperside.webmallappv1.model.UserProfile;
+import com.webperside.webmallappv1.model.UserSecurity;
 import com.webperside.webmallappv1.service.SecurityService;
 import com.webperside.webmallappv1.util.DigestUtil;
 
@@ -12,6 +17,8 @@ import java.security.NoSuchAlgorithmException;
 public class SecurityServiceImpl implements SecurityService {
 
     private final UserDao userDao = ContextDao.userDaoInstance();
+    private final UserSecurityDao userSecurityDao = ContextDao.userSecurityDaoInstance();
+    private final UserProfileDao userProfileDao = ContextDao.userProfileDaoInstance();
 
     @Override
     public int login(HttpServletRequest req, String username, String password) {
@@ -50,5 +57,15 @@ public class SecurityServiceImpl implements SecurityService {
     @Override
     public void logout(HttpServletRequest req) {
         req.getSession().setAttribute("loggedUser", null);
+    }
+
+    private SessionUserDetails prepareSessionUserDetails(User user) {
+        UserProfile userProfile = userProfileDao.findByUserId(user.getUserId()); //buralari artiq ozun yaz push ele. bayaq sehv branchda ishlemisdin
+        UserSecurity userSecurity = userSecurityDao.findByUserId(user.getUserId());
+        SessionUserDetails sessionUserDetails = new SessionUserDetails();
+        sessionUserDetails.setId(user.getUserId());
+        sessionUserDetails.setUsername(user.getUsername());
+        sessionUserDetails.setFullName(userProfile.getName() + " " + userProfile.getSurname());
+        return sessionUserDetails;
     }
 }
