@@ -5,6 +5,7 @@ import com.webperside.webmallappv1.dao.UserDao;
 import com.webperside.webmallappv1.dao.UserProfileDao;
 import com.webperside.webmallappv1.dao.UserSecurityDao;
 import com.webperside.webmallappv1.dto.SessionUserDetails;
+import com.webperside.webmallappv1.enums.Gender;
 import com.webperside.webmallappv1.model.User;
 import com.webperside.webmallappv1.model.UserProfile;
 import com.webperside.webmallappv1.model.UserSecurity;
@@ -42,8 +43,9 @@ public class SecurityServiceImpl implements SecurityService {
                     // SessionUserDetails.setUsername(user.getUsername());
                     // STEP 3.0
                     // STEP 4.0 ROLE
-                    System.out.println("SESSION USER DETAILS " + " ");
-                    req.getSession().setAttribute("loggedUser", user);
+                    SessionUserDetails details = prepareSessionUserDetails(user);
+                    System.out.println(details);
+                    req.getSession().setAttribute("loggedUser", details);
                     return 1;
                 }
             }
@@ -66,6 +68,7 @@ public class SecurityServiceImpl implements SecurityService {
         sessionUserDetails.setId(user.getUserId());
         sessionUserDetails.setUsername(user.getUsername());
         sessionUserDetails.setFullName(userProfile.getName() + " " + userProfile.getSurname());
+        sessionUserDetails.setGender(userProfile.getGender().getName());
         return sessionUserDetails;
     }
 }

@@ -1,4 +1,5 @@
 <%@ page import="com.webperside.webmallappv1.model.User" %>
+<%@ page import="com.webperside.webmallappv1.dto.SessionUserDetails" %>
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
     <div class="container-fluid">
         <a class="navbar-brand" href="#">Navbar</a>
@@ -35,14 +36,16 @@
             <%
                 Object obj =request.getSession().getAttribute("loggedUser");
                 if(obj != null){
-                    User user = (User) obj;
+                    SessionUserDetails user = (SessionUserDetails) obj;
             %>
             <div class="btn-group">
                 <button type="button" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-                    (<%=user.getUsername()%>)
+                    (<%=user.getFullName()%>)
                 </button>
                 <ul class="dropdown-menu dropdown-menu-start">
-                    <li><button class="dropdown-item" type="button">Action</button></li>
+                    <li>
+                        <a class="dropdown-item btn btn-outline-success" href="/user-profile" role="button">Profile</a>
+                    </li>
                     <li><button class="dropdown-item" type="button">Another action</button></li>
                     <li>
                         <a class="dropdown-item btn btn-outline-success" href="/logout" role="button">Logout</a>

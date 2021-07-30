@@ -17,7 +17,7 @@ public class UserProfileDaoImpl extends Connector implements UserProfileDao {
         us.setUser(new User(rs.getInt(2)));
         us.setName(rs.getString(3));
         us.setSurname(rs.getString(4));
-        us.setBirthdate(rs.getDate(5).toLocalDate());
+        us.setBirthdate(rs.getDate(5) != null ? rs.getDate(5).toLocalDate() : null);
         us.setGender(Gender.getByValue(rs.getInt(6)));
         us.setAvatar(rs.getString(7));
         us.setCreatedAt(rs.getTimestamp(8).toInstant());

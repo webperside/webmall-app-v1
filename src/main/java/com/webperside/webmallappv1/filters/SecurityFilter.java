@@ -1,5 +1,7 @@
 package com.webperside.webmallappv1.filters;
 
+import com.webperside.webmallappv1.util.AuthenticationUtil;
+
 import javax.servlet.*;
 import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletRequest;
@@ -11,7 +13,7 @@ import java.util.List;
 @WebFilter(displayName = "securityFilter",filterName = "filter2", urlPatterns = "*")
 public class SecurityFilter implements Filter {
 
-    final List<String> authenticatedUrls = Arrays.asList("/","/index");
+    final List<String> authenticatedUrls = Arrays.asList("/","/index", "/user-profile");
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
@@ -19,11 +21,10 @@ public class SecurityFilter implements Filter {
         HttpServletRequest req = (HttpServletRequest) request;
 
         String currentUri = req.getRequestURI();
-        Object userLoggedIn = req.getSession().getAttribute("loggedUser");
 
-        System.out.println("currentURI : " + currentUri + " === userLoggedIn : " + userLoggedIn);
+        boolean isLoggedIn = AuthenticationUtil.isAuthenticated(req);
 
-        if(userLoggedIn != null){ // authenticated
+        if(isLoggedIn){ // authenticated
             if(currentUri.contains("login")){
                 resp.sendRedirect("/index");
                 return;
