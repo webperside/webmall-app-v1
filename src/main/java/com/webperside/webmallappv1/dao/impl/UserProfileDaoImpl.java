@@ -2,11 +2,31 @@ package com.webperside.webmallappv1.dao.impl;
 
 import com.webperside.webmallappv1.dao.Connector;
 import com.webperside.webmallappv1.dao.UserProfileDao;
+import com.webperside.webmallappv1.enums.DataStatus;
+import com.webperside.webmallappv1.enums.Gender;
+import com.webperside.webmallappv1.model.User;
 import com.webperside.webmallappv1.model.UserProfile;
 
 import java.sql.*;
 
 public class UserProfileDaoImpl extends Connector implements UserProfileDao {
+
+    private UserProfile getUserProfile(ResultSet rs) throws Exception {
+        UserProfile us = new UserProfile();
+        us.setUserProfileId(rs.getInt(1));
+        us.setUser(new User(rs.getInt(2)));
+        us.setName(rs.getString(3));
+        us.setSurname(rs.getString(4));
+        us.setBirthdate(rs.getDate(5).toLocalDate());
+        us.setGender(Gender.getByValue(rs.getInt(6)));
+        us.setAvatar(rs.getString(7));
+        us.setCreatedAt(rs.getTimestamp(8).toInstant());
+        Timestamp modifiedAt = rs.getTimestamp(9);
+        us.setModifiedAt(modifiedAt != null ? modifiedAt.toInstant() : null);
+        us.setDataStatus(DataStatus.ACTIVE);
+        return us;
+    }
+
     @Override
     public int save(UserProfile userProfile) {
         try(Connection c = connect()){
@@ -36,5 +56,23 @@ public class UserProfileDaoImpl extends Connector implements UserProfileDao {
         }
 
         return 0;
+    }
+
+    @Override
+    public UserProfile findByUserId(Integer userId) {
+        try(Connection c = connect()){
+            String sql = "select * from user_profile where fk_user_id = ? and data_status = 1";
+            PreparedStatement stmt = c.prepareStatement(sql);
+            stmt.setInt(1, userId);
+            stmt.execute();
+            ResultSet rs = stmt.getResultSet();
+            if(rs.next()){
+                return
+            }
+            return null;
+        } catch (SQLException | ClassNotFoundException ex) {
+            ex.printStackTrace();
+        }
+        return null;
     }
 }

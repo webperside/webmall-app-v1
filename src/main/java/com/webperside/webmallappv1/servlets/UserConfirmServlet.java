@@ -10,7 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-@WebServlet(name="userConfirmServlet",value = "/confirm-registration")
+@WebServlet(name = "userConfirmServlet", value = "/confirm-registration")
 public class UserConfirmServlet extends HttpServlet {
 
     // /user-confirm?code=32487634
@@ -21,6 +21,10 @@ public class UserConfirmServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String code = req.getParameter("code");
 
+        //        if(code == null) {
+//            // redirect to error
+//        }
+
         int responseCode = userService.confirmUser(code);
 
         sendRedirectByResponseCode(responseCode, resp);
@@ -29,7 +33,7 @@ public class UserConfirmServlet extends HttpServlet {
     private void sendRedirectByResponseCode(int responseCode, HttpServletResponse resp) throws IOException {
         String url = "/login?msg=%s&code=%s";
         String msg;
-        if(responseCode == -1){
+        if (responseCode == -1) {
             msg = "Confirmation code not found";
         } else {
             msg = "Your account is confirmed";
