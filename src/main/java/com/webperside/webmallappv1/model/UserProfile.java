@@ -19,6 +19,13 @@ public class UserProfile {
     private Instant modifiedAt;
     private DataStatus dataStatus;
 
+    public UserProfile() {
+    }
+
+    public UserProfile(Integer userProfileId) {
+        this.userProfileId = userProfileId;
+    }
+
     public Integer getUserProfileId() {
         return userProfileId;
     }
