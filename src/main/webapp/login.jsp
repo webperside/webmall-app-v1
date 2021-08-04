@@ -13,22 +13,7 @@
 <%@include file="component/navbar.jsp" %>
 <div class="container">
     <c:choose>
-        <c:when test="${code != null && code == -1}">
-            <div class="alert alert-danger" role="alert">
-                    ${msg}
-            </div>
-        </c:when>
-        <c:when test="${code != null && code == 0}">
-            <div class="alert alert-danger" role="alert">
-                    ${msg}
-            </div>
-        </c:when>
-        <c:when test="${code != null && code == 2}">
-            <div class="alert alert-danger" role="alert">
-                    ${msg}
-            </div>
-        </c:when>
-        <c:when test="${code != null && code == 3}">
+        <c:when test="${code != null && (code == -1 || code == 0 || code == 2 || code == 3)}">
             <div class="alert alert-danger" role="alert">
                     ${msg}
             </div>

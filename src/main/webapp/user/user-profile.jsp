@@ -1,4 +1,4 @@
-<%@ page import="com.webperside.webmallappv1.dto.dto.UserProfileDto" %>
+<%@ page import="com.webperside.webmallappv1.dto.user.UserProfileDto" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <html>
@@ -18,6 +18,25 @@
     UserProfileDto userProfile = (UserProfileDto) request.getAttribute("userProfile");
   %>
 
+  <c:choose>
+    <c:when test="${code != null && (code == -1 || code == 0)}">
+      <div class="alert alert-danger" role="alert">
+          ${msg}
+      </div>
+    </c:when>
+    <c:otherwise>
+      <%
+        String msg = (String) request.getAttribute("msg");
+        if (msg != null) {
+      %>
+      <div class="alert alert-success" role="alert">
+          ${msg}
+      </div>
+      <%
+        }
+      %>
+    </c:otherwise>
+  </c:choose>
   <div class="d-flex justify-content-center">
     <div class="card" style="width: 18rem;">
       <img src="https://picsum.photos/200" class="card-img-top" alt="...">

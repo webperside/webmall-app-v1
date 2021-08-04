@@ -1,7 +1,7 @@
 package com.webperside.webmallappv1.servlets.user;
 
 import com.webperside.webmallappv1.context.ContextLogic;
-import com.webperside.webmallappv1.dto.dto.UserProfileDto;
+import com.webperside.webmallappv1.dto.user.UserProfileDto;
 import com.webperside.webmallappv1.service.UserProfileService;
 
 import javax.servlet.ServletException;
@@ -18,6 +18,8 @@ public class UserProfileServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        String msg = req.getParameter("msg");
+        String code = req.getParameter("code");
 
         UserProfileDto profile = userProfileService.getUserProfile(req);
 
@@ -27,6 +29,8 @@ public class UserProfileServlet extends HttpServlet {
         }
 
         req.setAttribute("userProfile",profile);
+        req.setAttribute("msg",msg);
+        req.setAttribute("code",code);
 
         req.getRequestDispatcher("/user/user-profile.jsp").forward(req, resp);
     }

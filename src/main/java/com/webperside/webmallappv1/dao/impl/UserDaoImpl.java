@@ -148,7 +148,7 @@ public class UserDaoImpl extends Connector implements UserDao {
 
             String sql = "update user set password = ? , user_status = ? , modified_by = ? , modified_at = ? where user_id = ?";
 
-            PreparedStatement stmt = c.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+            PreparedStatement stmt = c.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS);
 
             stmt.setString(1, user.getPassword());
             stmt.setInt(2, user.getUserStatus().getValue());

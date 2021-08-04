@@ -72,35 +72,62 @@ public class UserProfileDaoImpl extends Connector implements UserProfileDao {
                 return getUserProfile(rs);
             }
             return null;
-        } catch (SQLException | ClassNotFoundException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
-        } catch (Exception e) {
-            e.printStackTrace();
         }
         return null;
     }
 
     @Override
-    public boolean update(UserProfile userProfile) {
+    public UserProfile findById(Integer id) {
+        try(Connection c = connect()){
+            String sql = "select * from user_profile where user_profile_id = ? and data_status = 1";
+            PreparedStatement stmt = c.prepareStatement(sql);
+            stmt.setInt(1, id);
+            stmt.execute();
+            ResultSet rs = stmt.getResultSet();
+            if(rs.next()){
+                return getUserProfile(rs);
+            }
+            return null;
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return null;
+    }
+
+    @Override
+    public int update(UserProfile userProfile) {
         try(Connection c = connect()){
 
             String sql = "update user_profile set name = ?, surname = ?, birthdate = ?, gender = ?, avatar = ?, modified_at = ? " +
-                    "where fk_user_id = ?";
-            PreparedStatement stmt = c.prepareStatement(sql);
+                    "where user_profile_id = ?";
+
+            PreparedStatement stmt = c.prepareStatement(sql, new String[]{"user_profile_id"});
             stmt.setString(1, userProfile.getName());
             stmt.setString(2, userProfile.getSurname());
-            stmt.setDate(3, Date.valueOf(userProfile.getBirthdate()));
+
+            LocalDate birthday = userProfile.getBirthdate();
+
+            if(birthday != null){
+                stmt.setDate(3,  Date.valueOf(birthday));
+            } else {
+                stmt.setNull(3, Types.DATE);
+            }
+
             stmt.setInt(4, userProfile.getGender().getValue());
             stmt.setString(5, userProfile.getAvatar());
             stmt.setTimestamp(6, Timestamp.from(userProfile.getModifiedAt()));
             stmt.setInt(7, userProfile.getUserProfileId());
 
-            stmt.execute();
-            ResultSet rs = stmt.getGeneratedKeys();
-            return rs.next();
+            int rowsUpdated = stmt.executeUpdate();
+            if(rowsUpdated > 0){
+                return userProfile.getUserProfileId();
+            }
+            return -1;
         } catch (SQLException | ClassNotFoundException ex) {
             ex.printStackTrace();
         }
-        return false;
+        return 0;
     }
 }

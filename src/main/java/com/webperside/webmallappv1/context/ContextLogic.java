@@ -19,4 +19,6 @@ public class ContextLogic {
 
     public static UserProfileService userProfileServiceInstance(){return new UserProfileServiceImpl();};
 
+    public static SessionService sessionServiceInstance(){return new SessionServiceImpl();}
+
 }

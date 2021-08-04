@@ -31,6 +31,8 @@ public class LoginServlet extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String username = req.getParameter("username");
         String password = req.getParameter("password");
+        String date = req.getParameter("trip-start");
+        System.out.println(date); //
         int responseCode = securityService.login(req, username, password);
         String url;
         if (responseCode == -1) {

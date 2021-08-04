@@ -13,7 +13,7 @@ import java.util.List;
 @WebFilter(displayName = "securityFilter",filterName = "filter2", urlPatterns = "*")
 public class SecurityFilter implements Filter {
 
-    final List<String> authenticatedUrls = Arrays.asList("/","/index", "/user-profile");
+    final List<String> authenticatedUrls = Arrays.asList("/","/index", "/user-profile","/user-profile-edit");
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {

@@ -1,6 +1,7 @@
 package com.webperside.webmallappv1.service.impl;
 
 import com.webperside.webmallappv1.context.ContextDao;
+import com.webperside.webmallappv1.context.ContextLogic;
 import com.webperside.webmallappv1.dao.UserDao;
 import com.webperside.webmallappv1.dao.UserProfileDao;
 import com.webperside.webmallappv1.dao.UserSecurityDao;
@@ -10,6 +11,7 @@ import com.webperside.webmallappv1.model.User;
 import com.webperside.webmallappv1.model.UserProfile;
 import com.webperside.webmallappv1.model.UserSecurity;
 import com.webperside.webmallappv1.service.SecurityService;
+import com.webperside.webmallappv1.service.SessionService;
 import com.webperside.webmallappv1.util.DigestUtil;
 
 import javax.servlet.http.HttpServletRequest;
@@ -18,8 +20,7 @@ import java.security.NoSuchAlgorithmException;
 public class SecurityServiceImpl implements SecurityService {
 
     private final UserDao userDao = ContextDao.userDaoInstance();
-    private final UserSecurityDao userSecurityDao = ContextDao.userSecurityDaoInstance();
-    private final UserProfileDao userProfileDao = ContextDao.userProfileDaoInstance();
+    private final SessionService sessionService = ContextLogic.sessionServiceInstance();
 
     @Override
     public int login(HttpServletRequest req, String username, String password) {
@@ -43,9 +44,7 @@ public class SecurityServiceImpl implements SecurityService {
                     // SessionUserDetails.setUsername(user.getUsername());
                     // STEP 3.0
                     // STEP 4.0 ROLE
-                    SessionUserDetails details = prepareSessionUserDetails(user);
-                    System.out.println(details);
-                    req.getSession().setAttribute("loggedUser", details);
+                    sessionService.setSessionUserDetails(req, user);
                     return 1;
                 }
             }
@@ -61,14 +60,5 @@ public class SecurityServiceImpl implements SecurityService {
         req.getSession().setAttribute("loggedUser", null);
     }
 
-    private SessionUserDetails prepareSessionUserDetails(User user) {
-        UserProfile userProfile = userProfileDao.findByUserId(user.getUserId()); //buralari artiq ozun yaz push ele. bayaq sehv branchda ishlemisdin
-        UserSecurity userSecurity = userSecurityDao.findByUserId(user.getUserId());
-        SessionUserDetails sessionUserDetails = new SessionUserDetails();
-        sessionUserDetails.setId(user.getUserId());
-        sessionUserDetails.setUsername(user.getUsername());
-        sessionUserDetails.setFullName(userProfile.getName() + " " + userProfile.getSurname());
-        sessionUserDetails.setGender(userProfile.getGender().getName());
-        return sessionUserDetails;
-    }
+
 }
