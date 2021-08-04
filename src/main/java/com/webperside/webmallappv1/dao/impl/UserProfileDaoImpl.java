@@ -8,6 +8,8 @@ import com.webperside.webmallappv1.model.User;
 import com.webperside.webmallappv1.model.UserProfile;
 
 import java.sql.*;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 public class UserProfileDaoImpl extends Connector implements UserProfileDao {
 
@@ -76,5 +78,29 @@ public class UserProfileDaoImpl extends Connector implements UserProfileDao {
             e.printStackTrace();
         }
         return null;
+    }
+
+    @Override
+    public boolean update(UserProfile userProfile) {
+        try(Connection c = connect()){
+
+            String sql = "update user_profile set name = ?, surname = ?, birthdate = ?, gender = ?, avatar = ?, modified_at = ? " +
+                    "where fk_user_id = ?";
+            PreparedStatement stmt = c.prepareStatement(sql);
+            stmt.setString(1, userProfile.getName());
+            stmt.setString(2, userProfile.getSurname());
+            stmt.setDate(3, Date.valueOf(userProfile.getBirthdate()));
+            stmt.setInt(4, userProfile.getGender().getValue());
+            stmt.setString(5, userProfile.getAvatar());
+            stmt.setTimestamp(6, Timestamp.from(userProfile.getModifiedAt()));
+            stmt.setInt(7, userProfile.getUserProfileId());
+
+            stmt.execute();
+            ResultSet rs = stmt.getGeneratedKeys();
+            return rs.next();
+        } catch (SQLException | ClassNotFoundException ex) {
+            ex.printStackTrace();
+        }
+        return false;
     }
 }

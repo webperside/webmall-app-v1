@@ -8,4 +8,5 @@ public interface UserProfileDao {
 
     UserProfile findByUserId(Integer userId);
 
+    boolean update(UserProfile userProfile);
 }

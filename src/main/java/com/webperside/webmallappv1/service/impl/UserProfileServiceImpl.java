@@ -28,6 +28,7 @@ public class UserProfileServiceImpl implements UserProfileService {
                 UserProfile userProfile = userProfileDao.findByUserId(details.getId());
 
                 userProfileDto = new UserProfileDto();
+                userProfileDto.setUserProfileId(new UserProfile(details.getId()));
                 userProfileDto.setAvatar("avatar"); // todo
                 userProfileDto.setGender(details.getGender());
                 userProfileDto.setFullName(details.getFullName());
@@ -42,6 +43,7 @@ public class UserProfileServiceImpl implements UserProfileService {
             if(userProfile != null){
 
                 userProfileDto = new UserProfileDto();
+                userProfileDto.setUserProfileId(new UserProfile(userProfile.getUserProfileId()));
                 userProfileDto.setAvatar("avatar"); // todo
                 userProfileDto.setGender(userProfile.getGender().getName());
                 userProfileDto.setFullName(userProfile.getName() + " " + userProfile.getSurname());
