@@ -1,5 +1,5 @@
 <%@ page import="com.webperside.webmallappv1.model.User" %>
-<%@ page import="com.webperside.webmallappv1.dto.SessionUserDetails" %>
+<%@ page import="com.webperside.webmallappv1.dto.SessionUserDetailsDto" %>
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
     <div class="container-fluid">
         <a class="navbar-brand" href="#">Navbar</a>
@@ -36,15 +36,22 @@
             <%
                 Object obj =request.getSession().getAttribute("loggedUser");
                 if(obj != null){
-                    SessionUserDetails user = (SessionUserDetails) obj;
+                    SessionUserDetailsDto user = (SessionUserDetailsDto) obj;
             %>
             <div class="btn-group">
                 <button type="button" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-                    (<%=user.getFullName()%>)
+                    ( <%=user.getFullName()%> )
                 </button>
                 <ul class="dropdown-menu dropdown-menu-start">
                     <li>
                         <a class="dropdown-item btn btn-outline-success" href="/user-profile" role="button">Profile</a>
+                    </li>
+                    <li>
+                        <% if(user.getCompanyId() != null){ %>
+                        <a class="dropdown-item btn btn-outline-success" href="/admin/company" role="button"><%=user.getCompanyName()%></a>
+                        <% } else { %>
+                        <a class="dropdown-item btn btn-outline-success" href="/company-register?userId=<%=user.getId()%>" role="button">Create new company</a>
+                        <% } %>
                     </li>
                     <li><button class="dropdown-item" type="button">Another action</button></li>
                     <li>

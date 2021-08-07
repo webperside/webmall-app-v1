@@ -4,7 +4,7 @@ import com.webperside.webmallappv1.context.ContextDao;
 import com.webperside.webmallappv1.context.ContextLogic;
 import com.webperside.webmallappv1.dao.UserDao;
 import com.webperside.webmallappv1.dao.UserProfileDao;
-import com.webperside.webmallappv1.dto.SessionUserDetails;
+import com.webperside.webmallappv1.dto.SessionUserDetailsDto;
 import com.webperside.webmallappv1.dto.user.UserProfileDto;
 import com.webperside.webmallappv1.dto.user.UserProfileEditDto;
 import com.webperside.webmallappv1.enums.Gender;
@@ -109,7 +109,7 @@ public class UserProfileServiceImpl implements UserProfileService {
     }
 
     private UserProfile retrieveUserProfileOfAuthenticatedUser(HttpServletRequest req){
-        SessionUserDetails details = AuthenticationUtil.getAuthentication(req);
+        SessionUserDetailsDto details = AuthenticationUtil.getAuthentication(req);
         return userProfileDao.findByUserId(details.getId());
     }
 }

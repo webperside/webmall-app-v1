@@ -8,4 +8,6 @@ public interface CompanyDao {
 
     boolean checkExistsByName(String name);
 
+    Company findByUserId(Integer userId);
+
 }

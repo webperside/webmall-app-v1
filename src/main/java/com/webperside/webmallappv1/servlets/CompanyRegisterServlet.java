@@ -3,7 +3,9 @@ package com.webperside.webmallappv1.servlets;
 
 import com.webperside.webmallappv1.context.ContextLogic;
 import com.webperside.webmallappv1.dto.CompanyRegisterDto;
+import com.webperside.webmallappv1.dto.SessionUserDetailsDto;
 import com.webperside.webmallappv1.service.CompanyService;
+import com.webperside.webmallappv1.util.AuthenticationUtil;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;

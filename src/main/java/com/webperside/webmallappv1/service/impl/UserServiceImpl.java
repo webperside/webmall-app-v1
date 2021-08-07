@@ -60,6 +60,7 @@ public class UserServiceImpl implements UserService {
         if(us == null) return -1;
 
         us.setEmailConfirmation(EmailConfirmation.CONFIRMED);
+        us.setEmailConfirmationCode(null);
         us.setModifiedAt(Instant.now());
         userSecurityDao.update(us);
 

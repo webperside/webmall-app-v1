@@ -113,19 +113,20 @@ public class UserSecurityDaoImpl extends Connector implements UserSecurityDao {
     public int update(UserSecurity userSecurity) {
         try(Connection c = connect()){
 
-            String sql = "update user_security set email_confirmation = ? , password_reset_token = ? , password_reset_token_expire_date = ? , modified_at = ? " +
+            String sql = "update user_security set email_confirmation = ? , email_confirmation_code = ? , password_reset_token = ? , password_reset_token_expire_date = ? , modified_at = ? " +
                     "where user_security_id = ?";
 
             PreparedStatement stmt = c.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
 
             stmt.setInt(1, userSecurity.getEmailConfirmation().getValue());
-            stmt.setString(2, userSecurity.getPasswordResetToken());
+            stmt.setString(2, userSecurity.getEmailConfirmationCode());
+            stmt.setString(3, userSecurity.getPasswordResetToken());
 
             LocalDateTime passwordResetTokenExpireDate = userSecurity.getPasswordResetTokenExpireDate();
 
-            stmt.setTimestamp(3, passwordResetTokenExpireDate != null ? Timestamp.valueOf(passwordResetTokenExpireDate) : null);
-            stmt.setTimestamp(4, Timestamp.from(userSecurity.getModifiedAt()));
-            stmt.setInt(5, userSecurity.getUserSecurityId());
+            stmt.setTimestamp(4, passwordResetTokenExpireDate != null ? Timestamp.valueOf(passwordResetTokenExpireDate) : null);
+            stmt.setTimestamp(5, Timestamp.from(userSecurity.getModifiedAt()));
+            stmt.setInt(6, userSecurity.getUserSecurityId());
 
             stmt.executeUpdate();
             ResultSet rs = stmt.getGeneratedKeys();
