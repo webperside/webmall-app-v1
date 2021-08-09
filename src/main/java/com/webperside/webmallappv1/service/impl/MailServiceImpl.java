@@ -16,7 +16,7 @@ public class MailServiceImpl implements MailService {
     @Override
     public void send(MailDto mailDto) {
         ExecutorService executorService = Executors.newSingleThreadExecutor();
-        executorService.submit(new Runnable() {
+        executorService.execute(new Runnable() {
             @Override
             public void run() {
                 sendUtil(mailDto);
