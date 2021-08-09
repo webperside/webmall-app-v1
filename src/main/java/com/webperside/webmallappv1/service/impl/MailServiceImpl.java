@@ -7,26 +7,30 @@ import javax.mail.*;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import java.util.Properties;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class MailServiceImpl implements MailService {
     //SMTP
 
     @Override
     public void send(MailDto mailDto) {
-        Thread th = new Thread(new Runnable() {
+        ExecutorService executorService = Executors.newSingleThreadExecutor();
+        executorService.submit(new Runnable() {
             @Override
             public void run() {
                 sendUtil(mailDto);
             }
         });
-
-        th.start();
-
-        // ExecutorService executorService = Executors.cachedThreadPool();
-
-        // executorService.execute vs executorService.submit
-
-        // executorService.shutdown
+        executorService.shutdown();
+//        Thread th = new Thread(new Runnable() {
+//            @Override
+//            public void run() {
+//                sendUtil(mailDto);
+//            }
+//        });
+//
+//        th.start();
     }
 
     private void sendUtil(MailDto mailDto){
