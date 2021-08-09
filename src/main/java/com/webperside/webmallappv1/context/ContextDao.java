@@ -23,4 +23,6 @@ public class ContextDao {
     }
 
     public static CompanyDao companyDaoInstance() { return new CompanyDaoImpl(); }
+
+    public static UserContactDao userContactDaoInstance() { return new UserContactDaoImpl(); }
 }
