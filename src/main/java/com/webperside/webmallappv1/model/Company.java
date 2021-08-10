@@ -7,7 +7,6 @@ import java.time.Instant;
 public class Company {
 
     private Integer companyId;
-    private User user;
     private String name;
     private String description;
     private String logo;
@@ -16,20 +15,19 @@ public class Company {
     private Instant modifiedAt;
     private DataStatus dataStatus;
 
+    public Company() {
+    }
+
+    public Company(Integer companyId) {
+        this.companyId = companyId;
+    }
+
     public Integer getCompanyId() {
         return companyId;
     }
 
     public void setCompanyId(Integer companyId) {
         this.companyId = companyId;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
     }
 
     public String getName() {

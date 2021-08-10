@@ -33,7 +33,7 @@ public class LoginServlet extends HttpServlet {
         String password = req.getParameter("password");
         String date = req.getParameter("trip-start");
         System.out.println(date); //
-        int responseCode = securityService.login(req, username, password);
+        int responseCode = securityService.login(username, password);
         String url;
         if (responseCode == -1) {
             url = String.format("/login?msg=%s&code=%s", "Username or passwor incorrect", responseCode);

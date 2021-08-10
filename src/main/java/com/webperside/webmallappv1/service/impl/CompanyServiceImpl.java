@@ -19,7 +19,6 @@ public class CompanyServiceImpl implements CompanyService {
 
     private final CompanyDao companyDao = ContextDao.companyDaoInstance();
     private final UserDao userDao = ContextDao.userDaoInstance();
-    private final UserSecurityDao userSecurityDao = ContextDao.userSecurityDaoInstance();
 
     @Override
     public Integer register(CompanyRegisterDto companyRegisterDto) {
@@ -27,8 +26,8 @@ public class CompanyServiceImpl implements CompanyService {
         if (result) return -1;
         Company company = saveCompany(companyRegisterDto);
         User user = userDao.findById(companyRegisterDto.getUserId());
-        UserSecurity userSecurity = userSecurityDao.findByUserId(user.getUserId());
-        sendRegistrationEmail(user.getUsername(), userSecurity.getEmailConfirmationCode());
+        user.setCompany(company);
+        userDao.update(user);
         return company.getCompanyId();
     }
 
@@ -41,7 +40,6 @@ public class CompanyServiceImpl implements CompanyService {
 
     private Company prepareCompany(CompanyRegisterDto companyRegister) {
         Company company = new Company();
-        company.setUser(new User(companyRegister.getUserId()));
         company.setName(companyRegister.getName());
         company.setDescription(companyRegister.getDescription());
         company.setCreatedAt(Instant.now());

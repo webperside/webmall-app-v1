@@ -6,5 +6,5 @@ import javax.servlet.http.HttpServletRequest;
 
 public interface SessionService {
 
-    void setSessionUserDetails(HttpServletRequest req, User user);
+    void setSessionUserDetails(User user);
 }

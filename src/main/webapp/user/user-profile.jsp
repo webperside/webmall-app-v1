@@ -1,4 +1,5 @@
 <%@ page import="com.webperside.webmallappv1.dto.user.UserProfileDto" %>
+<%@ page import="com.webperside.webmallappv1.dto.user.UserContactDto" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <html>
@@ -43,6 +44,11 @@
       <div class="card-body">
         <h5 class="card-title"><%=userProfile.getFullName()%></h5>
         <p class="card-text"><%=userProfile.getGender()%> | <%=userProfile.getBirthDate() != null ? userProfile.getBirthDate() : "N/A"%></p>
+
+        <c:forEach items="${userProfile.getContacts()}" var="userType">
+          <p>${userType.getContact()}</p>
+        </c:forEach>
+
         <%
           if(userProfile.isMe()){
         %>

@@ -1,6 +1,7 @@
 package com.webperside.webmallappv1.servlets.user;
 
 import com.webperside.webmallappv1.context.ContextLogic;
+import com.webperside.webmallappv1.dto.user.UserContactDto;
 import com.webperside.webmallappv1.dto.user.UserProfileDto;
 import com.webperside.webmallappv1.service.UserProfileService;
 
@@ -10,6 +11,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.List;
 
 @WebServlet(name="userProfileServlet",value = "/user-profile/*")
 public class UserProfileServlet extends HttpServlet {

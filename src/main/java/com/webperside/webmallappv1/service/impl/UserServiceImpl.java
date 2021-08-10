@@ -41,16 +41,13 @@ public class UserServiceImpl implements UserService {
 
         saveUserProfile(user, userRegisterDto);
 
-        String emailConfirmationCode = saveUserSecurity(user);
-
         saveUserRoles(user);
 
-        if(user.getUserType().equals(UserType.USER)){
-            sendRegistrationEmail(user.getUsername(), emailConfirmationCode);
-            return 0;
-        }
+        String emailConfirmationCode = saveUserSecurity(user);
 
-        return user.getUserId(); // if userType is Company
+        sendRegistrationEmail(user.getUsername(), emailConfirmationCode);
+
+        return user.getUserType().equals(UserType.USER) ? 0 : user.getUserId(); // if userType is Company
     }
 
     @Override

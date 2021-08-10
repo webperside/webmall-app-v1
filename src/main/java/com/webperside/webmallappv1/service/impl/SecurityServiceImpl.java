@@ -19,7 +19,7 @@ public class SecurityServiceImpl implements SecurityService {
     private final SessionService sessionService = ContextLogic.sessionServiceInstance();
 
     @Override
-    public int login(HttpServletRequest req, String username, String password) {
+    public int login(String username, String password) {
         try {
 
             password = DigestUtil.md5(password);
@@ -40,7 +40,7 @@ public class SecurityServiceImpl implements SecurityService {
                     // SessionUserDetails.setUsername(user.getUsername());
                     // STEP 3.0
                     // STEP 4.0 ROLE
-                    sessionService.setSessionUserDetails(req, user);
+                    sessionService.setSessionUserDetails(user);
                     return 1;
                 }
             }

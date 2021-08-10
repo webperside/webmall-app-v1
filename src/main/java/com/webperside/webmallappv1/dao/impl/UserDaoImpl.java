@@ -5,6 +5,7 @@ import com.webperside.webmallappv1.dao.UserDao;
 import com.webperside.webmallappv1.enums.DataStatus;
 import com.webperside.webmallappv1.enums.UserStatus;
 import com.webperside.webmallappv1.enums.UserType;
+import com.webperside.webmallappv1.model.Company;
 import com.webperside.webmallappv1.model.User;
 
 import java.sql.*;
@@ -14,15 +15,16 @@ public class UserDaoImpl extends Connector implements UserDao {
     private User getUser(ResultSet rs) throws SQLException {
         User user = new User();
         user.setUserId(rs.getInt(1));
-        user.setUsername(rs.getString(2));
-        user.setPassword(rs.getString(3));
-        user.setUserType(UserType.getByValue(rs.getInt(4)));
-        user.setUserStatus(UserStatus.getByValue(rs.getInt(5)));
-        user.setCreatedBy(new User(rs.getInt(6)));
-        user.setCreatedAt(rs.getTimestamp(7).toInstant());
-        user.setModifiedBy(new User(rs.getInt(8)));
+        user.setCompany(new Company(rs.getInt(2)));
+        user.setUsername(rs.getString(3));
+        user.setPassword(rs.getString(4));
+        user.setUserType(UserType.getByValue(rs.getInt(5)));
+        user.setUserStatus(UserStatus.getByValue(rs.getInt(6)));
+        user.setCreatedBy(new User(rs.getInt(7)));
+        user.setCreatedAt(rs.getTimestamp(8).toInstant());
+        user.setModifiedBy(new User(rs.getInt(9)));
 
-        Timestamp modifiedAt = rs.getTimestamp(9);
+        Timestamp modifiedAt = rs.getTimestamp(10);
 
         user.setModifiedAt(modifiedAt != null ? modifiedAt.toInstant() : null);
         user.setDataStatus(DataStatus.ACTIVE);
@@ -146,7 +148,7 @@ public class UserDaoImpl extends Connector implements UserDao {
     public int update(User user) {
         try(Connection c = connect()){
 
-            String sql = "update user set password = ? , user_status = ? , modified_by = ? , modified_at = ? where user_id = ?";
+            String sql = "update user set password = ? , user_status = ? , modified_by = ? , modified_at = ?, fk_company_id = ? where user_id = ?";
 
             PreparedStatement stmt = c.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS);
 
@@ -164,10 +166,17 @@ public class UserDaoImpl extends Connector implements UserDao {
             stmt.setTimestamp(4, Timestamp.from(user.getModifiedAt()));
             stmt.setInt(5, user.getUserId());
 
+            Company company = user.getCompany();
+
+            if(company != null){
+                stmt.setInt(6, user.getCompany().getCompanyId());
+            } else {
+                stmt.setNull(6, Types.INTEGER);
+            }
+
             stmt.executeUpdate();
             ResultSet rs = stmt.getGeneratedKeys();
-            if(rs.next())
-            {
+            if(rs.next()) {
                 return rs.getInt(1);
             }
 

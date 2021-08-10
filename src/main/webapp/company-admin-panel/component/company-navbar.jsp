@@ -1,8 +1,13 @@
 <%@ page import="com.webperside.webmallappv1.model.User" %>
 <%@ page import="com.webperside.webmallappv1.dto.SessionUserDetailsDto" %>
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <%
+        Object obj =request.getSession().getAttribute("loggedUser");
+        if(obj != null){
+            SessionUserDetailsDto user = (SessionUserDetailsDto) obj;
+    %>
     <div class="container-fluid">
-        <a class="navbar-brand" href="#">Navbar</a>
+        <a class="navbar-brand" href="#"><%=user.getCompanyName()%></a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
@@ -29,11 +34,6 @@
                     <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
                 </li>
             </ul>
-            <%
-                Object obj =request.getSession().getAttribute("loggedUser");
-                if(obj != null){
-                    SessionUserDetailsDto user = (SessionUserDetailsDto) obj;
-            %>
             <div class="btn-group">
                 <button type="button" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
                     ( <%=user.getFullName()%> )
@@ -42,13 +42,13 @@
                     <li>
                         <a class="dropdown-item btn btn-outline-success" href="/user-profile" role="button">Profile</a>
                     </li>
-                    <li>
-                        <% if(user.getCompanyId() != null){ %>
-                        <a class="dropdown-item btn btn-outline-success" href="/company/admin/" role="button" target="_blank"><%=user.getCompanyName()%></a>
-                        <% } else { %>
-                        <a class="dropdown-item btn btn-outline-success" href="/company-register?userId=<%=user.getId()%>" role="button">Create new company</a>
-                        <% } %>
-                    </li>
+<%--                    <li>--%>
+<%--                        <% if(user.getCompanyId() != null){ %>--%>
+<%--                        <a class="dropdown-item btn btn-outline-success" href="/admin/company" role="button"><%=user.getCompanyName()%></a>--%>
+<%--                        <% } else { %>--%>
+<%--                        <a class="dropdown-item btn btn-outline-success" href="/company-register?userId=<%=user.getId()%>" role="button">Create new company</a>--%>
+<%--                        <% } %>--%>
+<%--                    </li>--%>
                     <li><button class="dropdown-item" type="button">Another action</button></li>
                     <li>
                         <a class="dropdown-item btn btn-outline-success" href="/logout" role="button">Logout</a>

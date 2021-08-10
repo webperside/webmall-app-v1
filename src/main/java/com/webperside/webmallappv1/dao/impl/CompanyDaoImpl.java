@@ -13,13 +13,12 @@ public class CompanyDaoImpl extends Connector implements CompanyDao {
     private Company getCompany(ResultSet rs) throws SQLException {
         Company company = new Company();
         company.setCompanyId(rs.getInt(1));
-        company.setUser(new User(rs.getInt(2)));
-        company.setName(rs.getString(3));
-        company.setDescription(rs.getString(4));
-        company.setLogo(rs.getString(5));
-        company.setCreatedAt(rs.getTimestamp(6).toInstant());
+        company.setName(rs.getString(2));
+        company.setDescription(rs.getString(3));
+        company.setLogo(rs.getString(4));
+        company.setCreatedAt(rs.getTimestamp(5).toInstant());
 
-        Timestamp modifiedAt = rs.getTimestamp(7);
+        Timestamp modifiedAt = rs.getTimestamp(6);
 
         company.setModifiedAt(modifiedAt != null ? modifiedAt.toInstant() : null);
         company.setDataStatus(DataStatus.ACTIVE);
@@ -29,14 +28,13 @@ public class CompanyDaoImpl extends Connector implements CompanyDao {
     @Override
     public int save(Company company) {
         try (Connection c = connect()) {
-            String sql = "insert into company(fk_user_id, name, description, created_at, data_status) " +
-                    "values(?, ?, ?, ?, ?)";
+            String sql = "insert into company(name, description, created_at, data_status) " +
+                    "values(?, ?, ?, ?)";
             PreparedStatement stmt = c.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
-            stmt.setInt(1, company.getUser().getUserId());
-            stmt.setString(2, company.getName());
-            stmt.setString(3, company.getDescription());
-            stmt.setTimestamp(4, Timestamp.from(company.getCreatedAt()));
-            stmt.setInt(5, DataStatus.ACTIVE.getValue());
+            stmt.setString(1, company.getName());
+            stmt.setString(2, company.getDescription());
+            stmt.setTimestamp(3, Timestamp.from(company.getCreatedAt()));
+            stmt.setInt(4, DataStatus.ACTIVE.getValue());
             stmt.executeUpdate();
             ResultSet rs = stmt.getGeneratedKeys();
             if (rs.next()) {
@@ -65,11 +63,11 @@ public class CompanyDaoImpl extends Connector implements CompanyDao {
     }
 
     @Override
-    public Company findByUserId(Integer userId) {
+    public Company findById(Integer companyId) {
         try(Connection c = connect()){
-            String sql = "select * from company where fk_user_id = ?";
+            String sql = "select * from company where company_id = ?";
             PreparedStatement stmt = c.prepareStatement(sql);
-            stmt.setInt(1,userId);
+            stmt.setInt(1,companyId);
             stmt.execute();
             ResultSet rs = stmt.getResultSet();
             if(rs.next()){

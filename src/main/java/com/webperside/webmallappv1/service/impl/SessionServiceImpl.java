@@ -10,6 +10,7 @@ import com.webperside.webmallappv1.model.User;
 import com.webperside.webmallappv1.model.UserProfile;
 import com.webperside.webmallappv1.model.UserSecurity;
 import com.webperside.webmallappv1.service.SessionService;
+import com.webperside.webmallappv1.util.HttpUtil;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -20,25 +21,28 @@ public class SessionServiceImpl implements SessionService {
     private final CompanyDao companyDao = ContextDao.companyDaoInstance();
 
     @Override
-    public void setSessionUserDetails(HttpServletRequest req, User user) {
+    public void setSessionUserDetails(User user) {
         SessionUserDetailsDto details = prepareSessionUserDetails(user);
         System.out.println(details);
-        req.getSession().setAttribute("loggedUser", details);
+        HttpUtil.REQUEST.getSession().setAttribute("loggedUser", details);
     }
 
     private SessionUserDetailsDto prepareSessionUserDetails(User user) {
         UserProfile userProfile = userProfileDao.findByUserId(user.getUserId()); //buralari artiq ozun yaz push ele. bayaq sehv branchda ishlemisdin
         UserSecurity userSecurity = userSecurityDao.findByUserId(user.getUserId());
-        Company company = companyDao.findByUserId(user.getUserId());
         SessionUserDetailsDto sessionUserDetailsDto = new SessionUserDetailsDto();
         sessionUserDetailsDto.setId(user.getUserId());
         sessionUserDetailsDto.setUsername(user.getUsername());
         sessionUserDetailsDto.setFullName(userProfile.getName() + " " + userProfile.getSurname());
         sessionUserDetailsDto.setGender(userProfile.getGender().getName());
 
-        if(company != null){
-            sessionUserDetailsDto.setCompanyId(company.getCompanyId());
-            sessionUserDetailsDto.setCompanyName(company.getName());
+        Company com = user.getCompany();
+
+        if(com != null){
+            com = companyDao.findById(com.getCompanyId());
+
+            sessionUserDetailsDto.setCompanyId(com.getCompanyId());
+            sessionUserDetailsDto.setCompanyName(com.getName());
         }
 
         return sessionUserDetailsDto;

@@ -21,6 +21,4 @@ public class ContextLogic {
 
     public static SessionService sessionServiceInstance(){return new SessionServiceImpl();}
 
-    public static UserContactService userContactServiceInstance() { return new UserContactServiceImpl();}
-
 }

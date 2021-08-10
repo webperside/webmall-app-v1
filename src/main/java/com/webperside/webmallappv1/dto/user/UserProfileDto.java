@@ -2,6 +2,7 @@ package com.webperside.webmallappv1.dto.user;
 
 
 import java.time.LocalDate;
+import java.util.List;
 
 public class UserProfileDto {
 
@@ -9,7 +10,8 @@ public class UserProfileDto {
     private String avatar;
     private LocalDate birthDate;
     private String gender;
-    private boolean isMe;
+    private Boolean isMe;
+    private List<UserContactDto> contacts;
 
     public UserProfileDto() {
     }
@@ -52,5 +54,13 @@ public class UserProfileDto {
 
     public void setMe(boolean me) {
         isMe = me;
+    }
+
+    public List<UserContactDto> getContacts() {
+        return contacts;
+    }
+
+    public void setContacts(List<UserContactDto> contacts) {
+        this.contacts = contacts;
     }
 }

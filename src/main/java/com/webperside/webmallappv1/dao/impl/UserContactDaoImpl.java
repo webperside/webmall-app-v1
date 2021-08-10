@@ -34,7 +34,7 @@ public class UserContactDaoImpl extends Connector implements UserContactDao {
         List<UserContact> userContacts = new ArrayList<>();
 
         try (Connection c = connect()) {
-            String sql = "select * from user_contact where fk_user_id = ? and where data_status = 1";
+            String sql = "select * from user_contact where fk_user_id = ? and data_status = 1";
             PreparedStatement stmt = c.prepareStatement(sql);
             stmt.setInt(1, userId);
             stmt.execute();

@@ -9,6 +9,7 @@ import java.time.Instant;
 public class User {
 
     private Integer userId;
+    private Company company;
     private String username; // todo
     private String password;
     private UserType userType; // todo
@@ -32,6 +33,14 @@ public class User {
 
     public void setUserId(Integer userId) {
         this.userId = userId;
+    }
+
+    public Company getCompany() {
+        return company;
+    }
+
+    public void setCompany(Company company) {
+        this.company = company;
     }
 
     public String getUsername() {
