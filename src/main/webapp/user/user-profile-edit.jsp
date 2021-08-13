@@ -47,6 +47,18 @@
                 </c:choose>
             </c:forEach>
         </select>
+        <div class="mb-3">
+            <label for="phone" class="form-label">Phone</label>
+            <input type="text" class="form-control" name="phone" id="phone" value="<%=userProfile.getPhone()%>">
+        </div>
+        <div class="mb-3">
+            <label for="email" class="form-label">Email</label>
+            <input type="email" class="form-control" name="email" id="email" value="<%=userProfile.getEmail()%>">
+        </div>
+        <div class="mb-3">
+            <label for="address" class="form-label">Address</label>
+            <input type="text" class="form-control" name="address" id="address" value="<%=userProfile.getAddress()%>">
+        </div>
         <input hidden type="text" class="form-control" name="id" value="<%=userProfile.getId()%>">
         <button type="submit">Edit</button>
     </form>

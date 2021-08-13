@@ -39,10 +39,10 @@ public class UserProfileServiceImpl implements UserProfileService {
         UserProfile userProfile = null;
         Boolean isMe = null;
 
-        if(params.length == 2){
+        if (params.length == 2) {
             userProfile = retrieveUserProfileOfAuthenticatedUser(req);
             isMe = true;
-        } else if(params.length == 3 && StringUtils.isNumeric(params[2])){
+        } else if (params.length == 3 && StringUtils.isNumeric(params[2])) {
             Integer id = Integer.parseInt(params[2]);
             userProfile = userProfileDao.findByUserId(id);
             isMe = false;
@@ -54,6 +54,7 @@ public class UserProfileServiceImpl implements UserProfileService {
     @Override
     public UserProfileEditDto getUserProfileForEdit(HttpServletRequest req) {
         UserProfile userProfile = retrieveUserProfileOfAuthenticatedUser(req);
+        List<UserContactDto> userContactDtos = getUserContacts(userProfile.getUser().getUserId());
 
         UserProfileEditDto edit = new UserProfileEditDto();
         edit.setId(userProfile.getUserProfileId());
@@ -67,39 +68,83 @@ public class UserProfileServiceImpl implements UserProfileService {
                 DateTimeFormatter.ofPattern("yyyy-MM-dd")
         ) : null);
 
+        if (userContactDtos.get(0).getContact() != null) {
+            edit.setPhone(userContactDtos.get(0).getContact());
+        }
+        if (userContactDtos.get(1).getContact() != null) {
+            edit.setEmail(userContactDtos.get(1).getContact());
+        }
+        if (userContactDtos.get(2).getContact() != null) {
+            edit.setAddress(userContactDtos.get(2).getContact());
+        }
+
         return edit;
     }
 
     @Override
     public int update(HttpServletRequest req, UserProfileEditDto editDto) {
         UserProfile userProfile = userProfileDao.findById(editDto.getId());
+        List<UserContact> userContacts = userContactDao.getUserContacts(editDto.getId());
 
         userProfile.setName(editDto.getName());
         userProfile.setSurname(editDto.getSurname());
         userProfile.setGender(Gender.getByValue(editDto.getGender()));
 
         String birthdate = editDto.getBirthdate();
-
-        userProfile.setBirthdate(birthdate != null ? LocalDate.parse(
-                birthdate,
-                DateTimeFormatter.ofPattern("yyyy-MM-dd")
-        ) : null);
+        if(birthdate != null && !birthdate.isEmpty()) {
+            userProfile.setBirthdate(LocalDate.parse(birthdate, DateTimeFormatter.ofPattern("yyyy-MM-dd")));
+        } else {
+            userProfile.setBirthdate(null);
+        }
 
         userProfile.setModifiedAt(Instant.now());
 
         int code = userProfileDao.update(userProfile);
 
-        if(code > 0){
+        if (code > 0) {
             User user = userDao.findById(userProfile.getUser().getUserId());
             sessionService.setSessionUserDetails(user);
         }
 
+        for(UserContact userContact : userContacts) {
+            if(userContact.getContactType().getValue() == 0) {
+                userContacts.get(0).setContact(editDto.getPhone());
+                userContacts.get(0).setModifiedAt(Instant.now());
+            }
+            else if(userContact.getContactType().getValue() == 1) {
+                userContacts.get(1).setContact(editDto.getEmail());
+                userContacts.get(1).setModifiedAt(Instant.now());
+            }
+            else {
+                userContacts.get(2).setContact(editDto.getAddress());
+                userContacts.get(2).setModifiedAt(Instant.now());
+            }
+        }
+
+//        if (editDto.getPhone() != null) {
+//            userContacts.get(0).setContact(editDto.getPhone());
+//            userContacts.get(0).setModifiedAt(Instant.now());
+//        }
+//        if (editDto.getEmail() != null) {
+//            userContacts.get(1).setContact(editDto.getEmail());
+//            userContacts.get(1).setModifiedAt(Instant.now());
+//        }
+//        if (editDto.getAddress() != null) {
+//            userContacts.get(2).setContact(editDto.getAddress());
+//            userContacts.get(2).setModifiedAt(Instant.now());
+//        }
+
+        System.out.println(editDto.getPhone());
+        System.out.println(editDto.getEmail());
+        System.out.println(editDto.getAddress());
+        userContactDao.update(userContacts);
+
         return code;
     }
 
-    private UserProfileDto prepareUserProfileDto(UserProfile userProfile, Boolean isMe){
+    private UserProfileDto prepareUserProfileDto(UserProfile userProfile, Boolean isMe) {
 
-        if(userProfile == null) return null;
+        if (userProfile == null) return null;
 
         UserProfileDto userProfileDto = new UserProfileDto();
         userProfileDto.setAvatar("avatar"); // todo
@@ -111,7 +156,7 @@ public class UserProfileServiceImpl implements UserProfileService {
         return userProfileDto;
     }
 
-    private List<UserContactDto> getUserContacts(Integer userId){
+    private List<UserContactDto> getUserContacts(Integer userId) {
         List<UserContact> userContacts = userContactDao.getUserContacts(userId);
         List<UserContactDto> userContactDtos = new ArrayList<>();
         for (UserContact userContact : userContacts) {
@@ -124,7 +169,7 @@ public class UserProfileServiceImpl implements UserProfileService {
         return userContactDtos;
     }
 
-    private UserProfile retrieveUserProfileOfAuthenticatedUser(HttpServletRequest req){
+    private UserProfile retrieveUserProfileOfAuthenticatedUser(HttpServletRequest req) {
         SessionUserDetailsDto details = AuthenticationUtil.getAuthentication(req);
         return userProfileDao.findByUserId(details.getId());
     }

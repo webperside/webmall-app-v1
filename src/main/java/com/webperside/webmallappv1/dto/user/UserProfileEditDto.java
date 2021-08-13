@@ -7,18 +7,24 @@ public class UserProfileEditDto {
     private String surname;
     private byte gender;
     private String birthdate;
+    private String phone;
+    private String email;
+    private String address;
     // todo avatar
 
 
     public UserProfileEditDto() {
     }
 
-    public UserProfileEditDto(Integer id, String name, String surname, byte gender, String birthdate) {
+    public UserProfileEditDto(Integer id, String name, String surname, byte gender, String birthdate, String phone, String email, String address) {
         this.id = id;
         this.name = name;
         this.surname = surname;
         this.gender = gender;
         this.birthdate = birthdate;
+        this.phone = phone;
+        this.email = email;
+        this.address = address;
     }
 
     public Integer getId() {
@@ -61,6 +67,30 @@ public class UserProfileEditDto {
         this.birthdate = birthdate;
     }
 
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
     @Override
     public String toString() {
         return "UserProfileEditDto{" +
@@ -69,6 +99,9 @@ public class UserProfileEditDto {
                 ", surname='" + surname + '\'' +
                 ", gender=" + gender +
                 ", birthdate='" + birthdate + '\'' +
+                ", phone='" + phone + '\'' +
+                ", email='" + email + '\'' +
+                ", address='" + address + '\'' +
                 '}';
     }
 }

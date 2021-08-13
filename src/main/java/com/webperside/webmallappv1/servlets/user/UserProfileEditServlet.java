@@ -35,7 +35,6 @@ public class UserProfileEditServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         UserProfileEditDto editDto = prepareData(req);
-        System.out.println(editDto);
         int responseCode = userProfileService.update(req, editDto);
 
         resp.sendRedirect("/user-profile?msg=Successfully updated!&code="+responseCode);
@@ -47,6 +46,9 @@ public class UserProfileEditServlet extends HttpServlet {
         String surname = req.getParameter("surname");
         String birthdate = req.getParameter("birthdate");
         byte gender = Byte.parseByte(req.getParameter("gender"));
-        return new UserProfileEditDto(id, name, surname, gender, birthdate);
+        String phone = req.getParameter("phone");
+        String email = req.getParameter("email");
+        String address = req.getParameter("address");
+        return new UserProfileEditDto(id, name, surname, gender, birthdate, phone, email, address);
     }
 }
