@@ -8,4 +8,5 @@ public interface UserContactDao {
 
     List<UserContact> getUserContacts(Integer userId);
 
+    void update(List<UserContact> userContacts);
 }

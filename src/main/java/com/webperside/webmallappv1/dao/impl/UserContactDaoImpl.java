@@ -48,4 +48,23 @@ public class UserContactDaoImpl extends Connector implements UserContactDao {
         }
         return null;
     }
+
+    @Override
+    public void update(List<UserContact> userContacts) {
+        try (Connection c = connect()){
+            String sql = "update user_contact set contact = ?, contact_type = ?, modified_at = ? where fk_user_id = ? and data_status = 1";
+            PreparedStatement stmt = c.prepareStatement(sql);
+
+            for(UserContact userContact : userContacts) {
+                stmt.setString(1, userContact.getContact());
+                stmt.setInt(2, userContact.getContactType().getValue());
+                stmt.setTimestamp(3, Timestamp.from(userContact.getModifiedAt()));
+                stmt.addBatch();
+            }
+
+            stmt.executeBatch();
+        }catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }
