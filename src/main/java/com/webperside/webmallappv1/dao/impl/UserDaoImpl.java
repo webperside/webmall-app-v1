@@ -15,7 +15,10 @@ public class UserDaoImpl extends Connector implements UserDao {
     private User getUser(ResultSet rs) throws SQLException {
         User user = new User();
         user.setUserId(rs.getInt(1));
-        user.setCompany(new Company(rs.getInt(2)));
+
+        int companyId = rs.getInt(2);
+
+        user.setCompany(companyId == 0 ? null : new Company(companyId));
         user.setUsername(rs.getString(3));
         user.setPassword(rs.getString(4));
         user.setUserType(UserType.getByValue(rs.getInt(5)));

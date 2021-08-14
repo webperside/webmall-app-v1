@@ -74,4 +74,16 @@ public class UserContact {
     public void setDataStatus(DataStatus dataStatus) {
         this.dataStatus = dataStatus;
     }
+
+    @Override
+    public String toString() {
+        return "UserContact{" +
+                "userContactId=" + userContactId +
+                ", contact='" + contact + '\'' +
+                ", contactType=" + contactType +
+                ", createdAt=" + createdAt +
+                ", modifiedAt=" + modifiedAt +
+                ", dataStatus=" + dataStatus +
+                '}';
+    }
 }

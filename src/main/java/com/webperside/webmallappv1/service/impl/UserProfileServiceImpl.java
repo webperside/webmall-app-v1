@@ -9,6 +9,7 @@ import com.webperside.webmallappv1.dto.SessionUserDetailsDto;
 import com.webperside.webmallappv1.dto.user.UserContactDto;
 import com.webperside.webmallappv1.dto.user.UserProfileDto;
 import com.webperside.webmallappv1.dto.user.UserProfileEditDto;
+import com.webperside.webmallappv1.enums.ContactType;
 import com.webperside.webmallappv1.enums.Gender;
 import com.webperside.webmallappv1.model.User;
 import com.webperside.webmallappv1.model.UserContact;
@@ -68,14 +69,16 @@ public class UserProfileServiceImpl implements UserProfileService {
                 DateTimeFormatter.ofPattern("yyyy-MM-dd")
         ) : null);
 
-        if (userContactDtos.get(0).getContact() != null) {
-            edit.setPhone(userContactDtos.get(0).getContact());
-        }
-        if (userContactDtos.get(1).getContact() != null) {
-            edit.setEmail(userContactDtos.get(1).getContact());
-        }
-        if (userContactDtos.get(2).getContact() != null) {
-            edit.setAddress(userContactDtos.get(2).getContact());
+        for(UserContactDto userContact : userContactDtos){
+            if(userContact.getContactType().equals(ContactType.PHONE)) {
+                edit.setPhone(userContact.getContact());
+            }
+            else if(userContact.getContactType().equals(ContactType.ADDRESS)) {
+                edit.setAddress(userContact.getContact());
+            }
+            else {
+                edit.setEmail(userContact.getContact());
+            }
         }
 
         return edit;
@@ -84,7 +87,7 @@ public class UserProfileServiceImpl implements UserProfileService {
     @Override
     public int update(HttpServletRequest req, UserProfileEditDto editDto) {
         UserProfile userProfile = userProfileDao.findById(editDto.getId());
-        List<UserContact> userContacts = userContactDao.getUserContacts(editDto.getId());
+        List<UserContact> userContacts = userContactDao.getUserContacts(userProfile.getUser().getUserId());
 
         userProfile.setName(editDto.getName());
         userProfile.setSurname(editDto.getSurname());
@@ -103,43 +106,28 @@ public class UserProfileServiceImpl implements UserProfileService {
 
         if (code > 0) {
             User user = userDao.findById(userProfile.getUser().getUserId());
+            updateUserContacts(userContacts, editDto);
             sessionService.setSessionUserDetails(user);
         }
 
+        return code;
+    }
+
+    private void updateUserContacts(List<UserContact> userContacts, UserProfileEditDto editDto){
         for(UserContact userContact : userContacts) {
-            if(userContact.getContactType().getValue() == 0) {
-                userContacts.get(0).setContact(editDto.getPhone());
-                userContacts.get(0).setModifiedAt(Instant.now());
+            if(userContact.getContactType().equals(ContactType.PHONE)) {
+                userContact.setContact(editDto.getPhone().isEmpty() ? null : editDto.getPhone());
             }
-            else if(userContact.getContactType().getValue() == 1) {
-                userContacts.get(1).setContact(editDto.getEmail());
-                userContacts.get(1).setModifiedAt(Instant.now());
+            else if(userContact.getContactType().equals(ContactType.ADDRESS)) {
+                userContact.setContact(editDto.getAddress().isEmpty() ? null : editDto.getAddress());
             }
             else {
-                userContacts.get(2).setContact(editDto.getAddress());
-                userContacts.get(2).setModifiedAt(Instant.now());
+                userContact.setContact(editDto.getEmail().isEmpty() ? null : editDto.getEmail());
             }
+            userContact.setModifiedAt(Instant.now());
         }
 
-//        if (editDto.getPhone() != null) {
-//            userContacts.get(0).setContact(editDto.getPhone());
-//            userContacts.get(0).setModifiedAt(Instant.now());
-//        }
-//        if (editDto.getEmail() != null) {
-//            userContacts.get(1).setContact(editDto.getEmail());
-//            userContacts.get(1).setModifiedAt(Instant.now());
-//        }
-//        if (editDto.getAddress() != null) {
-//            userContacts.get(2).setContact(editDto.getAddress());
-//            userContacts.get(2).setModifiedAt(Instant.now());
-//        }
-
-        System.out.println(editDto.getPhone());
-        System.out.println(editDto.getEmail());
-        System.out.println(editDto.getAddress());
         userContactDao.update(userContacts);
-
-        return code;
     }
 
     private UserProfileDto prepareUserProfileDto(UserProfile userProfile, Boolean isMe) {

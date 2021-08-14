@@ -4,10 +4,7 @@ import com.webperside.webmallappv1.context.ContextDao;
 import com.webperside.webmallappv1.dao.*;
 import com.webperside.webmallappv1.dto.UserRegisterDto;
 import com.webperside.webmallappv1.enums.*;
-import com.webperside.webmallappv1.model.Role;
-import com.webperside.webmallappv1.model.User;
-import com.webperside.webmallappv1.model.UserProfile;
-import com.webperside.webmallappv1.model.UserSecurity;
+import com.webperside.webmallappv1.model.*;
 import com.webperside.webmallappv1.service.UserService;
 import com.webperside.webmallappv1.util.DigestUtil;
 
@@ -27,6 +24,7 @@ public class UserServiceImpl implements UserService {
     private final UserSecurityDao userSecurityDao = ContextDao.userSecurityDaoInstance();
     private final RoleDao roleDao = ContextDao.roleDaoInstance();
     private final UserRoleDao userRoleDao = ContextDao.userRoleDaoInstance();
+    private final UserContactDao userContactDao = ContextDao.userContactDaoInstance();
 
     @Override
     public Integer register(UserRegisterDto userRegisterDto) {
@@ -42,6 +40,8 @@ public class UserServiceImpl implements UserService {
         saveUserProfile(user, userRegisterDto);
 
         saveUserRoles(user);
+
+        saveDefaultUserContacts(user);
 
         String emailConfirmationCode = saveUserSecurity(user);
 
@@ -145,5 +145,26 @@ public class UserServiceImpl implements UserService {
         }
 
         userRoleDao.save(user.getUserId(), rolesIds);
+    }
+
+    private void saveDefaultUserContacts(User user) {
+        List<UserContact> userContacts = prepareDefaultUserContactList(user);
+        userContactDao.save(userContacts);
+    }
+
+    private List<UserContact> prepareDefaultUserContactList(User user){
+        List<UserContact> userContacts = new ArrayList<>();
+
+        for(ContactType type : ContactType.values()){
+            UserContact userContact = new UserContact();
+            userContact.setContact(null);
+            userContact.setUser(user);
+            userContact.setContactType(type);
+            userContact.setCreatedAt(Instant.now());
+            userContact.setDataStatus(DataStatus.ACTIVE);
+            userContacts.add(userContact);
+        }
+
+        return userContacts;
     }
 }

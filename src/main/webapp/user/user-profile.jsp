@@ -1,5 +1,4 @@
 <%@ page import="com.webperside.webmallappv1.dto.user.UserProfileDto" %>
-<%@ page import="com.webperside.webmallappv1.dto.user.UserContactDto" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <html>
@@ -10,6 +9,9 @@
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
           integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
           crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css"
+        integrity="sha512-HK5fgLBL+xu6dm/Ii3z4xhlSUyZgTT9tuc/hSrtw6uzJOvgRr2a9jyxxT1ely+B+xFAmJKVSTbpM/CuL7qxO8w=="
+        crossorigin="anonymous"/>
 </head>
 <body>
 <%@ include file="../component/navbar.jsp" %>
@@ -45,8 +47,11 @@
         <h5 class="card-title"><%=userProfile.getFullName()%></h5>
         <p class="card-text"><%=userProfile.getGender()%> | <%=userProfile.getBirthDate() != null ? userProfile.getBirthDate() : "N/A"%></p>
 
-        <c:forEach items="${userProfile.getContacts()}" var="userType">
-          <p>${userType.getContact()}</p>
+        <c:forEach items="${userProfile.getContacts()}" var="userContact">
+          <c:if test="${userContact.getContact() != null}" >
+
+            <p><i class="${userContact.getContactType().getIcon()}"></i>${userContact.getContact()}</p>
+          </c:if>
         </c:forEach>
 
         <%
