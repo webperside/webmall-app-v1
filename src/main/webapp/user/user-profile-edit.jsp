@@ -16,6 +16,10 @@
     <%
         UserProfileEditDto userProfile = (UserProfileEditDto) request.getAttribute("userProfile");
     %>
+    <form method="post" action="/user-avatar" enctype="multipart/form-data">
+        <input type="file" name="file" />
+        <input type="submit" value="Upload" />
+    </form>
     <form action="/user-profile-edit" method="post">
         <div class="mb-3">
             <label for="name" class="form-label">Name</label>

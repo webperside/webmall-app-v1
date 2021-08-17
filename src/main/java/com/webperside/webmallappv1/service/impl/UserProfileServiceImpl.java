@@ -17,14 +17,18 @@ import com.webperside.webmallappv1.model.UserProfile;
 import com.webperside.webmallappv1.service.SessionService;
 import com.webperside.webmallappv1.service.UserProfileService;
 import com.webperside.webmallappv1.util.AuthenticationUtil;
+import com.webperside.webmallappv1.util.HttpUtil;
 import com.webperside.webmallappv1.util.StringUtils;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.Part;
+import java.io.IOException;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class UserProfileServiceImpl implements UserProfileService {
 
@@ -111,6 +115,22 @@ public class UserProfileServiceImpl implements UserProfileService {
         }
 
         return code;
+    }
+
+    @Override
+    public void setAvatar(Part part) {
+        try {
+            String uniqueName = UUID.randomUUID().toString() + "." +part.getContentType().split("/")[1];
+            part.write(System.getenv("FILE_STORE_URL")+uniqueName);
+
+            UserProfile userProfile = retrieveUserProfileOfAuthenticatedUser(HttpUtil.REQUEST);
+            userProfile.setAvatar(uniqueName);
+            userProfile.setModifiedAt(Instant.now());
+            userProfileDao.update(userProfile);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
     }
 
     private void updateUserContacts(List<UserContact> userContacts, UserProfileEditDto editDto){

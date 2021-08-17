@@ -10,6 +10,5 @@ public interface UserProfileDao {
 
     UserProfile findById(Integer id);
 
-
     int update(UserProfile userProfile);
 }
